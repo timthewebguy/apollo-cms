@@ -1,0 +1,22 @@
+# PHP Web Server
+apache:
+  container_name: yaml-cms-apache
+  build: .
+  ports:
+    - "8000:80"
+  volumes:
+    - ./public:/var/www/html
+  links:
+    - mysql:mysql
+  restart: always
+
+# MySQL Server
+mysql:
+  container_name: yaml-cms-mysql
+  image: mysql:latest
+  environment:
+    - MYSQL_ROOT_PASSWORD=root
+  ports:
+    - "3306:3306"
+  volumes:
+    - ./database:/docker-entrypoint-initdb.d
