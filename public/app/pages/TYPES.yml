@@ -1,0 +1,34 @@
+
+FAQ:
+  description: 'FAQ Data type'
+  contents:
+    question:
+      type: text
+      description: 'question of the faq'
+    answer:
+      type: text
+      description: 'answer to the faq'
+
+BUTTON:
+  description: 'button data type'
+  contents:
+    text:
+      type: text
+      description: 'Text to be displayed in the button'
+    link:
+      type: text
+      description: 'Link the button leads to'
+
+HERO_SLIDE:
+  description: 'Slide Data for a hero slider'
+  contents:
+    image:
+      type: image
+      description: 'the image of the hero slide'
+    text:
+      type: text
+      description: 'the text of the hero slide'
+    buttons:
+      type: BUTTON
+      min-items: 3
+      max-items: 3

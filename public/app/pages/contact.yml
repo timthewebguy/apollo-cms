@@ -1,0 +1,10 @@
+phone-number: 
+  type: text
+  description: 'Phone Number to reach us at'
+  max-items: 2
+  min-items: 2
+
+body-text:
+  type: wysiwyg
+  description: 'Text for the body of the page'
+  max-items: 1

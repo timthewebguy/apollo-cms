@@ -1,0 +1,13 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Just the controller, will call the default method 'load'
+RewriteRule ^(\w+)$ index.php?controller=$1 [L]
+
+# The controller and a method to be called
+RewriteRule ^(\w+)/(\w+)$ index.php?controller=$1&method=$2 [L]
+
+# The controller, a method to be called, and a parmeter for said method
+RewriteRule ^(\w+)/(\w+)/(\w+)$ index.php?controller=$1&method=$2&parameter=$3 [L]
+

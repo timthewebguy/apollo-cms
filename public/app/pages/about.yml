@@ -1,0 +1,21 @@
+
+header-image:
+  type: image
+  description: 'Image that sits at the top of the about page'
+  max-items: 1
+
+header-title:
+  type: text
+  description: 'Title Text for the about header'
+  max-items: 1
+
+faqs:
+  type: FAQ
+  description: 'FAQs for the about page'
+  max-items: unlimited
+
+footer-image:
+  type: image
+  description: 'Image that sits at the bottom of the about page'
+  max-items: 1
+
