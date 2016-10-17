@@ -62,6 +62,10 @@ Element.prototype.hasClass = function(_class) {
 	}
 };
 
+Element.prototype.forEach = function(func) {
+	func(this);
+};
+
 NodeList.prototype.addEventListener = function(event, callback, capture) {
 	this.forEach(function (n) {
 		n.addEventListener(event, callback, capture || false);
@@ -72,3 +76,9 @@ NodeList.prototype.removeEventListener = function(event, callback, capture) {
 		n.removeEventListener(event, callback, capture || false);
 	});
 };
+NodeList.prototype.loop = function(func) {
+	for(var i = 0; i < this.length; i++) {
+		func(this.item(i));
+	}
+};
+

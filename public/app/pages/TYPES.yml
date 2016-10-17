@@ -6,7 +6,7 @@ FAQ:
       type: text
       description: 'question of the faq'
     answer:
-      type: text
+      type: wysiwyg
       description: 'answer to the faq'
 
 BUTTON:
@@ -28,7 +28,8 @@ HERO_SLIDE:
     text:
       type: text
       description: 'the text of the hero slide'
-    buttons:
-      type: BUTTON
-      min-items: 3
-      max-items: 3
+    
+    #buttons:
+     # type: BUTTON
+      #min-items: 3
+      #max-items: 3

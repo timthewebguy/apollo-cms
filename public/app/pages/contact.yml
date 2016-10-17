@@ -8,3 +8,8 @@ body-text:
   type: wysiwyg
   description: 'Text for the body of the page'
   max-items: 1
+
+footer-text:
+  type: wysiwyg
+  description: 'Text for the footer of the page'
+  max-items: 1

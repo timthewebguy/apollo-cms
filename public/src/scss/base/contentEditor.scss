@@ -1,7 +1,7 @@
 
 .contentEditor {
 	display:block;
-	width:25em;
+	width:35em;
 	max-width:100%;
 	background-color:lighten($grey, 20%);
 	padding:1em;
@@ -17,12 +17,28 @@
 	animation: 0.3s $ease-curve 0s 1 contentGroupEnter;
 }
 
+.contentEditor__group--wysiwyg {
+	height:100%;
+	animation: 0.3s $ease-curve 0s 1 contentGroupEnterWysiwyg;
+}
+
+
+
 @keyframes contentGroupEnter {
 	0% {
 		height:0;
 	}
 	100% {
 		height:4em;
+	}
+}
+
+@keyframes contentGroupEnterWysiwyg {
+	0% {
+		height:0;
+	}
+	100% {
+		height:11em;
 	}
 }
 
@@ -112,6 +128,25 @@
 }
 
 
+.contentEditor__wysiwyg {
+	box-sizing:border-box;
+	width:100%;
+	padding:0.25em;
+	height:10em;
+	background-color:white;
+	outline:none;
+	transition:box-shadow 0.15s $ease-curve;
+	box-shadow: 0 0 0 0 $highlight-color;
+	animation: 0.3s $ease-curve 0s 1 contentInputEnter;
+
+	&:focus {
+		box-shadow: 0 0 0 0.15em $highlight-color;
+	}
+
+	p {
+		margin-top:0;
+	}
+}
 
 
 

@@ -70,9 +70,6 @@ class DashboardController {
 		$mc = new MediaController();
 		$mc->load();
 
-		$wy = new WYSIWYGController();
-		$wy->load();
-
 		include(APP_PATH . '/views/footer.php');/**/
 	}
 
