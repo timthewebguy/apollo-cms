@@ -30,7 +30,7 @@ class DashboardController {
 
 	function draw_content_editor($name, $data, $page_name) {
 
-		switch($data['type']) {
+		/*switch($data['type']) {
 			case 'text':
 				$view =  VIEWS . '/contentEditor/contentEditor_text.php';
 				break;
@@ -45,7 +45,9 @@ class DashboardController {
 				break;
 		}
 
-		include (VIEWS . '/contentEditor/contentEditor.php');
+		include (VIEWS . '/contentEditor/contentEditor.php');*/
+		$content = get_content($page_name, $name);
+		
 	}
 
 	function page($current_page = '') {

@@ -16,3 +16,7 @@ function get_type($target_type) {
 	}
 	return null;
 }
+
+function is_custom_type($type) {
+	return get_type($type) != null;
+}
