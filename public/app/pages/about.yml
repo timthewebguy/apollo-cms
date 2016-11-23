@@ -13,6 +13,12 @@ faqs:
   type: FAQ
   description: 'FAQs for the about page'
   max-items: unlimited
+  min-items: 2
+
+slider:
+  type: HERO_SLIDE
+  description: 'Testing'
+  min-items: 2
 
 footer-image:
   type: image

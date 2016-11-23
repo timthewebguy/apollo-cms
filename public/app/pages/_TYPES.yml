@@ -1,7 +1,8 @@
 
 FAQ:
   description: 'FAQ Data type'
-  contents:
+  #displayValue: 'question'
+  structure:
     question:
       type: text
       description: 'question of the faq'
@@ -11,7 +12,8 @@ FAQ:
 
 BUTTON:
   description: 'button data type'
-  contents:
+  displayValue: 'text'
+  structure:
     text:
       type: text
       description: 'Text to be displayed in the button'
@@ -21,7 +23,8 @@ BUTTON:
 
 HERO_SLIDE:
   description: 'Slide Data for a hero slider'
-  contents:
+  #displayValue: 'text'
+  structure:
     image:
       type: image
       description: 'the image of the hero slide'
@@ -32,7 +35,3 @@ HERO_SLIDE:
       type: BUTTON
       min-items: 3
       max-items: 3
-    #buttons:
-     # type: BUTTON
-      #min-items: 3
-      #max-items: 3

@@ -1,6 +1,7 @@
 
-function $(sel) {
-	var query = document.querySelectorAll(sel);
+function $(sel, ctx) {
+	var c = ctx || document;
+	var query = c.querySelectorAll(sel);
 	if(query.length == 1) {
 		return query.item(0);
 	} else {
@@ -25,6 +26,28 @@ Element.prototype.isBefore = function(el) {
 		return false;
 	}
 	return true;
+};
+
+Node.prototype.nextElement = function() {
+	var n = this.nextSibling;
+	if(n == null) { return false; }
+
+	if(n.nodeType != 1) {
+		return n.nextElement();
+	} else {
+		return n;
+	}
+};
+
+Node.prototype.previousElement = function() {
+	var n = this.previousSibling;
+	if(n == null) { return false; }
+
+	if(n.nodeType != 1) {
+		return n.previousElement();
+	} else {
+		return n;
+	}
 };
 
 Element.prototype.addClass = function(_class) {
@@ -62,17 +85,17 @@ Element.prototype.hasClass = function(_class) {
 	}
 };
 
-Element.prototype.forEach = function(func) {
+Element.prototype.loop = function(func) {
 	func(this);
 };
 
 NodeList.prototype.addEventListener = function(event, callback, capture) {
-	this.forEach(function (n) {
+	this.loop(function (n) {
 		n.addEventListener(event, callback, capture || false);
 	});
 };
 NodeList.prototype.removeEventListener = function(event, callback, capture) {
-	this.forEach(function (n) {
+	this.loop(function (n) {
 		n.removeEventListener(event, callback, capture || false);
 	});
 };

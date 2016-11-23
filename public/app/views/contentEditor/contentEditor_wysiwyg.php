@@ -1,6 +1,3 @@
 <fieldset class="contentEditor__group contentEditor__group--wysiwyg">
-	<label class="contentEditor__label">
-		<?php echo preg_replace('/-/', ' ', $name); ?>
-	</label>
-	<div class="contentEditor__wysiwyg" data-name="<?php echo $name ?>"></div>
+	<div class="contentEditor__wysiwyg" data-name="<?php echo $content->page . '-' . $content->name . '-' . $index ?>"></div>
 </fieldset>

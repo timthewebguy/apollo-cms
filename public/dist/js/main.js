@@ -9,17 +9,18 @@ function initContentEditor() {
 		loadMediaBrowser(this.dataset.addFor);
 	});
 
+	var glyphicon = function(name) { return '<span class="glyphicons glyphicons-' + name + '"></span>' };
+
 	var editor = new MediumEditor('.contentEditor__wysiwyg', {
 		toolbar: {
-			buttons: [{ name:'bold', contentDefault: '<span class="glyphicons glyphicons-bold"></span>'}, 
-								{ name:'italic', contentDefault:'<span class="glyphicons glyphicons-italic"></span>'},
-								{ name:'anchor', contentDefault:'<span class="glyphicons glyphicons-link"></span>'},
-								{ name:'justifyLeft', contentDefault:'<span class="glyphicons glyphicons-align-left"></span>'},
-								{ name:'justifyCenter', contentDefault:'<span class="glyphicons glyphicons-align-center"></span>'},
-								{ name:'justifyRight', contentDefault:'<span class="glyphicons glyphicons-align-right"></span>'},
-								{ name:'justifyFull', contentDefault:'<span class="glyphicons glyphicons-justify"></span>'},
-								{ name:'orderedlist', contentDefault:'<span class="glyphicons glyphicons-list"></span>'},
-								{ name:'unorderedlist', contentDefault:'<span class="glyphicons glyphicons-list-numbered"></span>'},
+			buttons: [{ name:'bold', contentDefault: glyphicon('bold')}, 
+								{ name:'italic', contentDefault:glyphicon('italic')},
+								{ name:'anchor', contentDefault:glyphicon('link')},
+								{ name:'justifyLeft', contentDefault:glyphicon('align-left')},
+								{ name:'justifyCenter', contentDefault:glyphicon('align-center')},
+								{ name:'justifyRight', contentDefault:glyphicon('align-right')},
+								{ name:'orderedlist', contentDefault:glyphicon('list-numbered')},
+								{ name:'unorderedlist', contentDefault:glyphicon('list')},
 								'h1', 'h2', 'h3'],
 			buttonLabels:'fontawesome',
 			static:true,
@@ -27,6 +28,22 @@ function initContentEditor() {
 		},
 		placeholder:false
 	});
+
+
+	$('.contentEditorCustom__title').addEventListener('click', function() {
+		var p = this.parentElement;
+		var i = this.nextElement();
+		
+		p.style.height = (i.getBoundingClientRect().height + this.offsetHeight) + 'px';
+
+		if(p.hasClass('open')) {
+			p.removeClass('open');
+			setTimeout(function() { p.style.height = '2.5em' ;}, 1);
+		} else {
+			p.addClass('open');
+			setTimeout(function() { p.style.height = 'auto'; }, 300);
+		}
+	}, false);/**/
 }
 
 
@@ -160,7 +177,7 @@ function deleteMedia() {
 
 function loadMediaBrowser(target) {
 	loadTarget = '#' + target;
-	if($(loadTarget).value != '') {
+	if($(loadTarget).value != '' && $(loadTarget).dataset.valueName != '') {
 		$('#' + $(loadTarget).dataset.valueName).checked = true;
 	}
 	$('.mediaBrowser').addClass('visible');
@@ -8027,7 +8044,7 @@ function initNavigation() {
 		this.addClass('pageTab--active');
 
 		setTimeout(function() {
-			$('.pageEditor').forEach(function(p) {
+			$('.pageEditor').loop(function(p) {
 				p.removeClass('pageEditor--enterRight')
 					.removeClass('pageEditor--enterLeft')
 					.removeClass('pageEditor--exitRight')
@@ -8039,8 +8056,9 @@ function initNavigation() {
 }
 
 
-function $(sel) {
-	var query = document.querySelectorAll(sel);
+function $(sel, ctx) {
+	var c = ctx || document;
+	var query = c.querySelectorAll(sel);
 	if(query.length == 1) {
 		return query.item(0);
 	} else {
@@ -8065,6 +8083,28 @@ Element.prototype.isBefore = function(el) {
 		return false;
 	}
 	return true;
+};
+
+Node.prototype.nextElement = function() {
+	var n = this.nextSibling;
+	if(n == null) { return false; }
+
+	if(n.nodeType != 1) {
+		return n.nextElement();
+	} else {
+		return n;
+	}
+};
+
+Node.prototype.previousElement = function() {
+	var n = this.previousSibling;
+	if(n == null) { return false; }
+
+	if(n.nodeType != 1) {
+		return n.previousElement();
+	} else {
+		return n;
+	}
 };
 
 Element.prototype.addClass = function(_class) {
@@ -8102,17 +8142,17 @@ Element.prototype.hasClass = function(_class) {
 	}
 };
 
-Element.prototype.forEach = function(func) {
+Element.prototype.loop = function(func) {
 	func(this);
 };
 
 NodeList.prototype.addEventListener = function(event, callback, capture) {
-	this.forEach(function (n) {
+	this.loop(function (n) {
 		n.addEventListener(event, callback, capture || false);
 	});
 };
 NodeList.prototype.removeEventListener = function(event, callback, capture) {
-	this.forEach(function (n) {
+	this.loop(function (n) {
 		n.removeEventListener(event, callback, capture || false);
 	});
 };

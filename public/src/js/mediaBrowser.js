@@ -118,7 +118,7 @@ function deleteMedia() {
 
 function loadMediaBrowser(target) {
 	loadTarget = '#' + target;
-	if($(loadTarget).value != '') {
+	if($(loadTarget).value != '' && $(loadTarget).dataset.valueName != '') {
 		$('#' + $(loadTarget).dataset.valueName).checked = true;
 	}
 	$('.mediaBrowser').addClass('visible');

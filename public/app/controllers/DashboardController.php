@@ -8,47 +8,58 @@ class DashboardController {
 
 	function load() {
 		//Get the pages
-		$pages = get_pages();
-
-		//Save the first page's name
-		foreach($pages as $key => $value) break;
-
-		//Set the current page
-		$current_page = $key;
-		if(isset($_GET['parameter_a'])) {
-			if(get_page($_GET['parameter_a']) != null) {
-				$current_page = $_GET['parameter_a'];
-			}
-		}
-
-		//Remove the $key binding, because why not
-		unset($key);
+		$current_page = PageController::GetFirstPageName();
 
 		$this->page($current_page);
 	}
 
+	/*
+
 
 	function draw_content_editor($name, $data, $page_name) {
 
-		/*switch($data['type']) {
-			case 'text':
-				$view =  VIEWS . '/contentEditor/contentEditor_text.php';
-				break;
-			case 'wysiwyg':
-				$view =  VIEWS . '/contentEditor/contentEditor_wysiwyg.php';
-				break;
-			case 'image':
-				$view =  VIEWS . '/contentEditor/contentEditor_image.php';
-				break;
-			default:
-				$view = VIEWS . '/contentEditor/contentEditor_custom.php';
-				break;
-		}
+		$view = $this->get_view($data['type']);
 
-		include (VIEWS . '/contentEditor/contentEditor.php');*/
 		$content = get_content($page_name, $name);
-		
+
+		include (VIEWS . '/contentEditor/contentEditor.php');
+
 	}
+
+	function draw_custom_content($parent_name, $type_data, $c_data) {
+		foreach($type_data['contents'] as $content_name => $data) {
+			echo $data['type'];
+		  $view = $this->get_view($data['type']);
+
+		  $name = $parent_name . '-' . $content_name;
+
+
+		  $content = [];
+		  
+		  for($i = 0; $i < count($c_data[$content_name]); $i++) {
+		  	array_push($content, []);
+		  	$content[$i]['index'] = $i;
+		  	$content[$i]['content_value'] = $c_data[$content_name];
+		  	$content[$i]['content_type'] = $data['type'];
+		  }
+
+		  //var_dump($c_data);
+
+
+		  include (VIEWS . '/contentEditor/contentEditor.php');
+
+		  //echo '<br><br>';
+		}
+	}*/
+
+	function draw_editors($page) {
+		$cc = new ContentController();
+		foreach($page->contents as $name => $data) {
+			$content = ContentController::GetContent($name, $page->name, $data);
+			$cc->render($content);
+		}
+	}
+
 
 	function page($current_page = '') {
 
@@ -59,10 +70,10 @@ class DashboardController {
 		}
 
 		//Get the pages
-		$pages = get_pages();
+		$pages = PageController::GetPages();
 
 		//sync the database before we load anything (just in case)
-		sync_db();
+		DB::Sync();
 
 		//Load the views
 		include(APP_PATH . '/views/header.php');

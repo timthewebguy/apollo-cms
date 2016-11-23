@@ -17,10 +17,11 @@ class MediaController {
 
 					$ext = pathinfo($file_name, PATHINFO_EXTENSION);
 					$name = basename($file_name, '.' . $ext);
-					$id = db_query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$name}', '{$ext}', '/app/uploads/{$file_name}')");
-					$data = result_array("SELECT * FROM " . MEDIA_TABLE . " WHERE id={$id}")[0];
+					$id = DB::Query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$name}', '{$ext}', '/app/uploads/{$file_name}')");
+					$data = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE . " WHERE id={$id}")[0];
 					$media = new MediaObject($data['media_name'], $data['media_ext'], $data['media_abs_path'], $data['id']);
 					include(VIEWS . '/mediaBrowser/mediaObject_view.php');
+					
 				}
 			}
 		}
@@ -29,7 +30,7 @@ class MediaController {
 
 	function delete() {
 
-		$path = result_array("SELECT media_abs_path FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}")[0]['media_abs_path'];
+		$path = DB::ResultArray("SELECT media_abs_path FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}")[0]['media_abs_path'];
 
 		$path = str_replace('/app', '..', $path);
 
@@ -37,12 +38,12 @@ class MediaController {
 
 		echo $success;
 
-		db_query("DELETE FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}");
+		DB::Query("DELETE FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}");
 	}
 
 	public function fetch_all_media() {
 
-		$media = result_array("SELECT * FROM " . MEDIA_TABLE);
+		$media = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE);
 		$media_objects = array();
 		
 		foreach($media as $media_data) {

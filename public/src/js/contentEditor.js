@@ -9,17 +9,18 @@ function initContentEditor() {
 		loadMediaBrowser(this.dataset.addFor);
 	});
 
+	var glyphicon = function(name) { return '<span class="glyphicons glyphicons-' + name + '"></span>' };
+
 	var editor = new MediumEditor('.contentEditor__wysiwyg', {
 		toolbar: {
-			buttons: [{ name:'bold', contentDefault: '<span class="glyphicons glyphicons-bold"></span>'}, 
-								{ name:'italic', contentDefault:'<span class="glyphicons glyphicons-italic"></span>'},
-								{ name:'anchor', contentDefault:'<span class="glyphicons glyphicons-link"></span>'},
-								{ name:'justifyLeft', contentDefault:'<span class="glyphicons glyphicons-align-left"></span>'},
-								{ name:'justifyCenter', contentDefault:'<span class="glyphicons glyphicons-align-center"></span>'},
-								{ name:'justifyRight', contentDefault:'<span class="glyphicons glyphicons-align-right"></span>'},
-								{ name:'justifyFull', contentDefault:'<span class="glyphicons glyphicons-justify"></span>'},
-								{ name:'orderedlist', contentDefault:'<span class="glyphicons glyphicons-list"></span>'},
-								{ name:'unorderedlist', contentDefault:'<span class="glyphicons glyphicons-list-numbered"></span>'},
+			buttons: [{ name:'bold', contentDefault: glyphicon('bold')}, 
+								{ name:'italic', contentDefault:glyphicon('italic')},
+								{ name:'anchor', contentDefault:glyphicon('link')},
+								{ name:'justifyLeft', contentDefault:glyphicon('align-left')},
+								{ name:'justifyCenter', contentDefault:glyphicon('align-center')},
+								{ name:'justifyRight', contentDefault:glyphicon('align-right')},
+								{ name:'orderedlist', contentDefault:glyphicon('list-numbered')},
+								{ name:'unorderedlist', contentDefault:glyphicon('list')},
 								'h1', 'h2', 'h3'],
 			buttonLabels:'fontawesome',
 			static:true,
@@ -27,4 +28,20 @@ function initContentEditor() {
 		},
 		placeholder:false
 	});
+
+
+	$('.contentEditorCustom__title').addEventListener('click', function() {
+		var p = this.parentElement;
+		var i = this.nextElement();
+		
+		p.style.height = (i.getBoundingClientRect().height + this.offsetHeight) + 'px';
+
+		if(p.hasClass('open')) {
+			p.removeClass('open');
+			setTimeout(function() { p.style.height = '2.5em' ;}, 1);
+		} else {
+			p.addClass('open');
+			setTimeout(function() { p.style.height = 'auto'; }, 300);
+		}
+	}, false);/**/
 }

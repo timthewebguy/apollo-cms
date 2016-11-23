@@ -1,20 +1,18 @@
 
 	<nav class="pageTabs">
-		<?php foreach ($pages as $name => $page) : ?>
-			<a href="#" id="tab-<?php echo $name ?>" class="pageTab<?php if($name == $current_page) { echo ' pageTab--active'; } ?>"><?php echo $name ?></a>
+		<?php foreach ($pages as $page) : ?>
+			<a href="#" id="tab-<?php echo $page->name ?>" class="pageTab<?php if($page->name == $current_page) { echo ' pageTab--active'; } ?>"><?php echo $page->name ?></a>
 		<?php endforeach; ?>
 	</nav>
 
 	<main class="pageEditors">
-		<?php foreach($pages as $name => $page) : ?>
-			<section class="pageEditor<?php if($name == $current_page) { echo ' pageEditor--visible'; } ?>" id="page-<?php echo $name ?>">
-				<h1 class="pageName"><?php echo $name ?></h1>
+		<?php foreach($pages as $page) : ?>
+			<section class="pageEditor<?php if($page->name == $current_page) { echo ' pageEditor--visible'; } ?>" id="page-<?php echo $page->name ?>">
+				<h1 class="pageName"><?php echo $page->name ?></h1>
 				<form action="" method="POST" role="form">
-					<input type="hidden" name="page" value="<?php echo $name ?>">
+					<input type="hidden" name="page" value="<?php echo $page->name ?>">
 					<?php 
-						foreach($page as $content_name => $content_data) {
-							$this->draw_content_editor($content_name, $content_data, $name);
-						}  
+						$this->draw_editors($page); 
 					?>
 				</form>
 			</section>

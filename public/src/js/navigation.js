@@ -23,7 +23,7 @@ function initNavigation() {
 		this.addClass('pageTab--active');
 
 		setTimeout(function() {
-			$('.pageEditor').forEach(function(p) {
+			$('.pageEditor').loop(function(p) {
 				p.removeClass('pageEditor--enterRight')
 					.removeClass('pageEditor--enterLeft')
 					.removeClass('pageEditor--exitRight')
