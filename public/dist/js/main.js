@@ -1,19 +1,48 @@
 function initContentEditor() {
-	$('.contentEditor__incrementor').addEventListener('click', function(e) {
-		e.preventDefault();
-		
-	});
 
-	$('.contentEditor__mediaBrowserLaunch').addEventListener('click', function(e) {
-		e.preventDefault();
-		loadMediaBrowser(this.dataset.addFor);
-	});
+	var addTarget, removeTarget;
+
+	function addContent(addFor) {	
+
+		var formData = new FormData(),
+			xhr = new XMLHttpRequest();
+
+		formData.append('data', addFor);
+
+		xhr.onload = function() {
+			addTarget.insertAdjacentHTML('beforebegin', this.responseText);
+			contentEditorEvents();
+		};
+
+		xhr.open('post', '/content/add_content');
+		xhr.send(formData);
+	}
+
+	function removeContent(removeFor, removeIndex) {
+		var formData = new FormData(),
+			xhr = new XMLHttpRequest();
+
+		formData.append('target', removeFor);
+		formData.append('index', removeIndex);
+
+		xhr.onload = function() {
+			if(this.responseText == 'success') {
+				removeTarget.parentElement.removeChild(removeTarget);
+			} else {
+				//alert("Something went wrong in deleting the content. Please try again.");
+				console.log(this.responseText);
+			}
+		};
+
+		xhr.open('post', '/content/remove_content');
+		xhr.send(formData);
+	}
 
 	var glyphicon = function(name) { return '<span class="glyphicons glyphicons-' + name + '"></span>' };
 
 	var editor = new MediumEditor('.contentEditor__wysiwyg', {
 		toolbar: {
-			buttons: [{ name:'bold', contentDefault: glyphicon('bold')}, 
+			buttons: [{ name:'bold', contentDefault:glyphicon('bold')}, 
 								{ name:'italic', contentDefault:glyphicon('italic')},
 								{ name:'anchor', contentDefault:glyphicon('link')},
 								{ name:'justifyLeft', contentDefault:glyphicon('align-left')},
@@ -29,8 +58,7 @@ function initContentEditor() {
 		placeholder:false
 	});
 
-
-	$('.contentEditorCustom__title').addEventListener('click', function() {
+	function customTypeOpenEvent() {
 		var p = this.parentElement;
 		var i = this.nextElement();
 		
@@ -43,7 +71,49 @@ function initContentEditor() {
 			p.addClass('open');
 			setTimeout(function() { p.style.height = 'auto'; }, 300);
 		}
-	}, false);/**/
+	}
+
+	function mediaBrowserButtonEvent(e) {
+		e.preventDefault();
+		loadMediaBrowser(this.dataset.addFor);
+	}
+
+	function addContentButtonEvent(e) {
+		e.preventDefault();
+		addTarget = this;
+		addContent(this.dataset.addfor);
+	}
+
+	function contentRemoveButtonEvent(e) {
+		e.preventDefault();
+		removeTarget = this.parentElement.parentElement;
+		removeContent(this.dataset.removeFor, this.dataset.removeIndex);
+	}
+
+	function contentEditorEvents() {
+
+		$('.contentEditor__incrementor').removeEventListener('click', addContentButtonEvent, false);
+		$('.contentEditorCustom__title').removeEventListener('click', customTypeOpenEvent, false);
+		$('.contentEditor__mediaBrowserLaunch').removeEventListener('click', mediaBrowserButtonEvent, false);
+		$('.contentEditor__toolbarBtn--remove').removeEventListener('click', contentRemoveButtonEvent, false);
+
+		$('.contentEditorCustom__title').addEventListener('click', customTypeOpenEvent, false);
+		$('.contentEditor__mediaBrowserLaunch').addEventListener('click', mediaBrowserButtonEvent, false);
+		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
+		$('.contentEditor__toolbarBtn--remove').addEventListener('click', contentRemoveButtonEvent, false);
+
+		$('.contentEditor').loop(function(ce) {
+			if(ce.find('> .contentEditor__group').length >= ce.dataset.maxItems) {
+				ce.find('> .contentEditor__incrementor').loop(function(i) {
+					i.addClass('disabled');
+				});
+			}
+		});
+	}
+
+	contentEditorEvents();
+
+	
 }
 
 
@@ -109,7 +179,7 @@ function closeMediaBrowser() {
 }
 
 function validateFileUpload(files) {
-	var exts = new Array('jpg', 'png', 'gif', 'pdf', 'psd');
+	var exts = new Array('jpg', 'png', 'gif', 'pdf');
 	var filesToUpload = new Array();
 
 	for(var i = 0; i < files.length; i++) {
@@ -8055,6 +8125,28 @@ function initNavigation() {
 	});
 }
 
+(function(doc, proto) {
+  try { // check if browser supports :scope natively
+    doc.querySelector(':scope body');
+  } catch (err) { // polyfill native methods if it doesn't
+    ['querySelector', 'querySelectorAll'].forEach(function(method) {
+      var nativ = proto[method];
+      proto[method] = function(selectors) {
+        if (/(^|,)\s*:scope/.test(selectors)) { // only if selectors contains :scope
+          var id = this.id; // remember current element id
+          this.id = 'ID_' + Date.now(); // assign new unique id
+          selectors = selectors.replace(/((^|,)\s*):scope/g, '$1#' + this.id); // replace :scope with #ID
+          var result = doc[method](selectors);
+          this.id = id; // restore previous id
+          return result;
+        } else {
+          return nativ.call(this, selectors); // use native code for other selectors
+        }
+      }
+    });
+  }
+})(window.document, Element.prototype);
+
 
 function $(sel, ctx) {
 	var c = ctx || document;
@@ -8065,6 +8157,23 @@ function $(sel, ctx) {
 		return query;
 	}
 }
+
+Node.prototype.find = function(selector) {
+	if (/(^\s*|,\s*)>/.test(selector)) {
+		if (!this.id) {
+			this.id = 'ID_' + new Date().getTime();
+			var removeId = true;
+		}
+		selector = selector.replace(/(^\s*|,\s*)>/g, '$1#' + this.id + ' >');
+		var result = document.querySelectorAll(selector);
+		if (removeId) {
+			this.id = null;
+		}
+		return result;
+	} else {
+		return this.querySelectorAll(selector);
+	}
+};
 
 Element.prototype.nodeNumber = function() {
 	var el = this, node=0;

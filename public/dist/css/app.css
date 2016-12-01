@@ -383,7 +383,7 @@ html {
 .pageTabs {
   width: 100vw;
   height: 3em;
-  background-color: #c4c4c4; }
+  background-color: #c9cfd2; }
   .pageTabs::after {
     visibility: hidden;
     display: block;
@@ -405,11 +405,11 @@ html {
   cursor: pointer;
   transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
   .pageTab:hover {
-    background-color: #ababab; }
+    background-color: #adb6bb; }
 
 .pageTab--active {
   color: white;
-  background-color: #3F51B5; }
+  background-color: #3f51b5; }
   .pageTab--active:hover {
     background-color: #32408f; }
 
@@ -484,7 +484,7 @@ html {
   display: block;
   max-width: 50em;
   width: 100%;
-  background-color: #d1d1d1;
+  background-color: #d7dbdd;
   padding: 1em;
   margin-bottom: 3em;
   box-sizing: border-box; }
@@ -494,16 +494,13 @@ html {
   padding: 0;
   margin: 0 0 0.5em;
   border: 0;
-  height: 2.25em;
+  height: auto;
   width: 100%;
   animation: 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 contentGroupEnter; }
 
 .contentEditor__group--wysiwyg {
   height: 100%;
   animation: 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 contentGroupEnterWysiwyg; }
-
-.contentEditor__group--custom {
-  height: auto; }
 
 @keyframes contentGroupEnter {
   0% {
@@ -523,7 +520,7 @@ html {
   font-size: 0.8em;
   text-transform: uppercase;
   margin-bottom: 0.5em;
-  color: #3F51B5;
+  color: #3f51b5;
   animation: 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 contentLabelEnter; }
 
 @keyframes contentLabelEnter {
@@ -569,7 +566,7 @@ html {
   float: left;
   width: 25%;
   -webkit-appearence: none;
-  background-color: #4CAF50;
+  background-color: #ff9800;
   border: none;
   color: white;
   text-transform: uppercase;
@@ -580,7 +577,7 @@ html {
   transition: background-color 0.1s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.1s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none; }
   .contentEditor__mediaBrowserLaunch:hover {
-    background-color: #357a38; }
+    background-color: #b36a00; }
   .contentEditor__mediaBrowserLaunch:focus {
     box-shadow: 0 0 0 0.2em #2196F3; }
 
@@ -606,15 +603,21 @@ html {
   overflow: hidden;
   height: 2.5em;
   box-shadow: 0 0 0.5em transparent;
-  transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  transition: height 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
   .contentEditorCustom__container.open {
     box-shadow: 0 0 0.75em rgba(0, 0, 0, 0.75); }
     .contentEditorCustom__container.open > .contentEditorCustom__title {
-      background-color: #4CAF50;
+      background-color: #ff9800;
       color: white; }
+    .contentEditorCustom__container.open > .contentEditorCustom__inner {
+      opacity: 1;
+      transform: translatey(0%);
+      transition: opacity 0.25s cubic-bezier(0, 0, 0.2, 1), transform 0.25s cubic-bezier(0, 0, 0.2, 1); }
 
 .contentEditorCustom__title {
   box-sizing: border-box;
+  position: relative;
+  z-index: 1;
   width: 100%;
   padding: 0 1em;
   line-height: 2.5em;
@@ -624,13 +627,16 @@ html {
   cursor: pointer;
   transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
   .contentEditorCustom__title:hover {
-    background-color: #4CAF50;
+    background-color: #ff9800;
     color: white; }
 
 .contentEditorCustom__inner {
   padding: 1em;
   box-sizing: border-box;
-  overflow: hidden; }
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-5%);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 1, 1), transform 0.25s cubic-bezier(0.4, 0, 1, 1); }
 
 .contentEditor__incrementor {
   -webkit-appearence: none;
@@ -641,14 +647,39 @@ html {
   font-size: 1em;
   color: white;
   transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 0.2em rgba(158, 158, 158, 0.6);
+  box-shadow: 0 0 0.2em rgba(159, 170, 175, 0.6);
   float: right;
   clear: both;
   outline: none; }
   .contentEditor__incrementor:hover {
     background-color: #0c7cd5; }
   .contentEditor__incrementor:focus {
-    box-shadow: 0 0 0.2em rgba(158, 158, 158, 0.6), 0 0 0 0.15em #39a1f4; }
+    box-shadow: 0 0 0.2em rgba(159, 170, 175, 0.6), 0 0 0 0.15em #39a1f4; }
+  .contentEditor__incrementor.disabled {
+    opacity: 0.5;
+    pointer-events: none; }
+
+.contentEditor__toolbar {
+  height: 1em;
+  width: 100%;
+  float: left;
+  overflow: hidden;
+  transition: height 0.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.contentEditor__toolbarBtn {
+  border: none;
+  float: right;
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.6em;
+  padding: 0;
+  outline: none; }
+  .contentEditor__toolbarBtn:hover {
+    color: #ff9800; }
+  .contentEditor__toolbarBtn:first-child {
+    padding-right: 0.15em; }
 
 .mediaBrowser {
   position: fixed;
@@ -658,7 +689,9 @@ html {
   right: 0;
   z-index: 999;
   padding: 1em;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(0.2em);
+          backdrop-filter: blur(0.2em);
   display: none; }
   .mediaBrowser::after {
     content: "";
@@ -680,7 +713,7 @@ html {
     opacity: 1; }
 
 .mediaBrowser__inner {
-  background-color: #ebebeb;
+  background-color: #f2f4f5;
   box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.75);
   width: 100%;
   height: 100%;
@@ -705,11 +738,11 @@ html {
   -webkit-appearence: none;
   background: white;
   border: none;
-  color: #3F51B5;
+  color: #3f51b5;
   width: 3em;
   height: 3em; }
   .mediaBrowser__close:hover {
-    background-color: #3F51B5;
+    background-color: #3f51b5;
     color: white; }
   .mediaBrowser__close:focus {
     outline: none; }
@@ -727,7 +760,7 @@ html {
   box-shadow: 0 0 0em #2196F3; }
 
 .media {
-  background-color: #f7f7f7;
+  background-color: white;
   width: 14em;
   max-width: 100%;
   height: 14em;
@@ -809,16 +842,16 @@ html {
 
 .mediaBrowser__select {
   color: white;
-  background-color: #3F51B5;
-  border-color: #3F51B5; }
+  background-color: #3f51b5;
+  border-color: #3f51b5; }
 
 .mediaBrowser__upload {
   float: left;
   line-height: 2.5em;
   margin: 0.625em 0 0.625em 0.625em;
   color: white;
-  background-color: #4CAF50;
-  border-color: #4CAF50;
+  background-color: #ff9800;
+  border-color: #ff9800;
   cursor: pointer; }
 
 .mediaBrowser__uploadInput {

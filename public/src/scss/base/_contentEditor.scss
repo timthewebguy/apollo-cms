@@ -14,7 +14,7 @@
 	padding:0;
 	margin:0 0 0.5em;
 	border:0;
-	height:2.25em;
+	height:auto;
 	width:100%;
 	animation: 0.3s $ease-curve 0s 1 contentGroupEnter;
 }
@@ -24,9 +24,6 @@
 	animation: 0.3s $ease-curve 0s 1 contentGroupEnterWysiwyg;
 }
 
-.contentEditor__group--custom {
-	height:auto;
-}
 
 
 
@@ -161,7 +158,7 @@
 	overflow:hidden;
 	height:2.5em;
 	box-shadow: 0 0 0.5em rgba(0,0,0,0);
-	transition:height 0.3s $ease-curve, box-shadow 0.3s $ease-curve;
+	transition:height 0.25s $ease-curve, box-shadow 0.25s $ease-curve;
 
 	&.open {
 		box-shadow: 0 0 0.75em rgba(0,0,0,0.75);
@@ -169,11 +166,19 @@
 			background-color:$secondary-color;
 			color:white;
 		}
+		&>.contentEditorCustom__inner {
+			opacity:1;
+			transform:translatey(0%);
+			transition: opacity 0.25s $ease-in-curve, 
+							transform 0.25s $ease-in-curve;
+		}
 	}
 }
 
 .contentEditorCustom__title {
 	box-sizing:border-box;
+	position:relative;
+	z-index:1;
 	width:100%;
 	padding:0 1em;
 	line-height:2.5em;
@@ -193,11 +198,11 @@
 	padding:1em;
 	box-sizing:border-box;
 	overflow:hidden;
+	opacity:0;
+	transform:translateY(-5%);
+	transition: opacity 0.25s $ease-out-curve, 
+							transform 0.25s $ease-out-curve;
 }
-
-
-
-
 
 .contentEditor__incrementor {
 	-webkit-appearence:none;
@@ -219,5 +224,39 @@
 	&:focus {
 		box-shadow: 0 0 0.2em transparentize($grey, 0.4),
 								0 0 0 0.15em #{lighten($highlight-color, 5%)};
+	}
+
+	&.disabled {
+		opacity:0.5;
+		pointer-events:none;
+	}
+}
+
+
+.contentEditor__toolbar {
+	height:1em;
+	width:100%;
+	float:left;
+	overflow:hidden;
+	transition:height 0.15s $ease-curve, opacity 0.15s $ease-curve;
+}
+
+.contentEditor__toolbarBtn {
+	border:none;
+	float:right;
+	background-color:transparent;
+	color:rgba(0,0,0,0.1);
+	font-weight:bold;
+	text-transform:uppercase;
+	font-size:0.6em;
+	padding:0;
+	outline:none;
+
+	&:hover {
+		color:$secondary-color;
+	}
+
+	&:first-child {
+		padding-right:0.15em;
 	}
 }

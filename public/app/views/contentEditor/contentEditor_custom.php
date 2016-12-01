@@ -8,6 +8,7 @@
 			?>
 		</div>
 	</section>
+	<?php if($content->minValues > 1 || ($content->maxValues > 1 || $content->maxValues == 'unlimited')) {include 'contentEditor_toolbar.php';} ?>
 </fieldset>
 
 

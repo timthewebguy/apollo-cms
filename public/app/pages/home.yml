@@ -2,7 +2,7 @@ slider:
   type: HERO_SLIDE
   description: 'Slides for the home header'
   min-items: 3
-  max-items: 3
+  max-items: 6
 
 tagline:
   type: text 

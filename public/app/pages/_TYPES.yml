@@ -21,6 +21,7 @@ BUTTON:
       type: text
       description: 'Link the button leads to'
 
+
 HERO_SLIDE:
   description: 'Slide Data for a hero slider'
   #displayValue: 'text'
@@ -33,5 +34,5 @@ HERO_SLIDE:
       description: 'the text of the hero slide'
     buttons:
       type: BUTTON
-      min-items: 3
+      min-items: 1
       max-items: 3

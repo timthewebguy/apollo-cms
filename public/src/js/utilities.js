@@ -9,6 +9,23 @@ function $(sel, ctx) {
 	}
 }
 
+Node.prototype.find = function(selector) {
+	if (/(^\s*|,\s*)>/.test(selector)) {
+		if (!this.id) {
+			this.id = 'ID_' + new Date().getTime();
+			var removeId = true;
+		}
+		selector = selector.replace(/(^\s*|,\s*)>/g, '$1#' + this.id + ' >');
+		var result = document.querySelectorAll(selector);
+		if (removeId) {
+			this.id = null;
+		}
+		return result;
+	} else {
+		return this.querySelectorAll(selector);
+	}
+};
+
 Element.prototype.nodeNumber = function() {
 	var el = this, node=0;
 	while( (el = el.previousElementSibling) != null) {

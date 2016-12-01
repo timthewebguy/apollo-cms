@@ -6,8 +6,13 @@ class ContentController {
 		require_once MODELS . '/Content_model.php';
 	}
 
-	public function GetContent($name, $page, $content_structure) {
+	public function GetContent($name, $page, $content_data = []) {
 		require_once MODELS . '/Content_model.php';
+
+		if($content_data == []) {
+			$p = PageController::GetPage($page);
+			$content_data = $p->contents[$name];
+		}
 
 		$db_entries = DB::ResultArray("SELECT * FROM " . CONTENT_TABLE . " WHERE content_name='{$name}' AND content_page='{$page}' ORDER BY content_index");
 
@@ -15,7 +20,7 @@ class ContentController {
 			return null;
 		}
 
-		$description = $content_structure['description'];
+		$description = $content_data['description'];
 		$type = $db_entries[0]['content_type'];
 
 		$values = [];
@@ -23,8 +28,8 @@ class ContentController {
 			$values[] = $entry['content_value'];
 		}
 
-		$minValues = isset($content_structure['min-items']) ? $content_structure['min-items'] : 1;
-		$maxValues = isset($content_structure['max-items']) ? $content_structure['max-items'] : 1;
+		$minValues = isset($content_data['min-items']) ? $content_data['min-items'] : 1;
+		$maxValues = isset($content_data['max-items']) ? $content_data['max-items'] : 1;
 
 		$content = new Content($name, $page, $description, $type, $values, $minValues, $maxValues);
 		return $content;
@@ -33,25 +38,26 @@ class ContentController {
 	function get_view($content) {
 		switch($content->type) {
 			case 'text':
-				return  VIEWS . '/contentEditor/contentEditor_text.php';
+				$view = VIEWS . '/contentEditor/contentEditor_text.php';
 				break;
 			case 'wysiwyg':
-				return  VIEWS . '/contentEditor/contentEditor_wysiwyg.php';
+				$view = VIEWS . '/contentEditor/contentEditor_wysiwyg.php';
 				break;
 			case 'image':
-				return  VIEWS . '/contentEditor/contentEditor_image.php';
+				$view = VIEWS . '/contentEditor/contentEditor_image.php';
 				break;
 			default:
-				return VIEWS . '/contentEditor/contentEditor_custom.php';
+				$view =VIEWS . '/contentEditor/contentEditor_custom.php';
 				break;
 		}
+		return $view;
 	}
 
 	function render($content) {
 		$view = $this->get_view($content);
 
 		include VIEWS . '/contentEditor/contentEditor.php';
-	}
+	} 
 
 	function draw_custom_editor($id, $parent, $index) {
 		$type_name = $parent->type;
@@ -74,10 +80,61 @@ class ContentController {
 					$values = [$db_data[$content_name]];
 				}
 
-				$content = new Content($parent->name . '-' . $index . '-' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $min, $max);
+				$content = new Content($parent->name . '__' . $index . '__' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $min, $max);
 				$this->render($content);
 
 		}
 	}
+
+	function add_content() {
+
+		if(!isset($_POST['data'])) { return; }
+
+		$path = explode('__', $_POST['data']);
+
+		if(count($path) == 2) {
+			$page = PageController::GetPage($path[0]);
+
+			DB::AddContent($path[0], $path[1], $page->contents[$path[1]]);
+
+			$content = ContentController::GetContent($path[1], $path[0]);
+			$view = $this->get_view($content);
+			$index = count($content->values) - 1;
+			$value = $content->values[$index];
+
+			include $view;
+		} else {
+			for($i = 1; $i < count($path)-1; $i += 2) {
+
+				$parent = $path[$i];
+				$parent_index = $path[$i + 1];
+
+			}
+		}
+	}
+
+	function remove_content() {
+
+		if(!isset($_POST['target'])) { return; }
+
+		$path = explode('__', $_POST['target']);
+
+		if(count($path) == 2) {
+			$page = PageController::GetPage($path[0]);
+
+			DB::RemoveContent($path[0], $path[1], $page->contents[$path[1]], $_POST['index']);
+
+			echo 'success';
+		} else {
+			var_dump($path);
+			echo $_POST['index'];
+
+			for($i = 1; $i < count($path) + 1; $i += 2) {
+				$content_name = 
+			}
+		}
+
+	}
+
 
 }

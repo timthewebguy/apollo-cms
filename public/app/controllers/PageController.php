@@ -37,7 +37,7 @@ class PageController {
 		return $response;
 	}
 
-	public function get_page($target_page) {
+	public function GetPage($target_page) {
 
 		$pages = PageController::GetPages();
 		foreach($pages as $page) {

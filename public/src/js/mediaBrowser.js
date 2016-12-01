@@ -50,7 +50,7 @@ function closeMediaBrowser() {
 }
 
 function validateFileUpload(files) {
-	var exts = new Array('jpg', 'png', 'gif', 'pdf', 'psd');
+	var exts = new Array('jpg', 'png', 'gif', 'pdf');
 	var filesToUpload = new Array();
 
 	for(var i = 0; i < files.length; i++) {

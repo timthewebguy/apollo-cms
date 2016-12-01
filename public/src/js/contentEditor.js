@@ -1,19 +1,48 @@
 function initContentEditor() {
-	$('.contentEditor__incrementor').addEventListener('click', function(e) {
-		e.preventDefault();
-		
-	});
 
-	$('.contentEditor__mediaBrowserLaunch').addEventListener('click', function(e) {
-		e.preventDefault();
-		loadMediaBrowser(this.dataset.addFor);
-	});
+	var addTarget, removeTarget;
+
+	function addContent(addFor) {	
+
+		var formData = new FormData(),
+			xhr = new XMLHttpRequest();
+
+		formData.append('data', addFor);
+
+		xhr.onload = function() {
+			addTarget.insertAdjacentHTML('beforebegin', this.responseText);
+			contentEditorEvents();
+		};
+
+		xhr.open('post', '/content/add_content');
+		xhr.send(formData);
+	}
+
+	function removeContent(removeFor, removeIndex) {
+		var formData = new FormData(),
+			xhr = new XMLHttpRequest();
+
+		formData.append('target', removeFor);
+		formData.append('index', removeIndex);
+
+		xhr.onload = function() {
+			if(this.responseText == 'success') {
+				removeTarget.parentElement.removeChild(removeTarget);
+			} else {
+				//alert("Something went wrong in deleting the content. Please try again.");
+				console.log(this.responseText);
+			}
+		};
+
+		xhr.open('post', '/content/remove_content');
+		xhr.send(formData);
+	}
 
 	var glyphicon = function(name) { return '<span class="glyphicons glyphicons-' + name + '"></span>' };
 
 	var editor = new MediumEditor('.contentEditor__wysiwyg', {
 		toolbar: {
-			buttons: [{ name:'bold', contentDefault: glyphicon('bold')}, 
+			buttons: [{ name:'bold', contentDefault:glyphicon('bold')}, 
 								{ name:'italic', contentDefault:glyphicon('italic')},
 								{ name:'anchor', contentDefault:glyphicon('link')},
 								{ name:'justifyLeft', contentDefault:glyphicon('align-left')},
@@ -29,8 +58,7 @@ function initContentEditor() {
 		placeholder:false
 	});
 
-
-	$('.contentEditorCustom__title').addEventListener('click', function() {
+	function customTypeOpenEvent() {
 		var p = this.parentElement;
 		var i = this.nextElement();
 		
@@ -43,5 +71,47 @@ function initContentEditor() {
 			p.addClass('open');
 			setTimeout(function() { p.style.height = 'auto'; }, 300);
 		}
-	}, false);/**/
+	}
+
+	function mediaBrowserButtonEvent(e) {
+		e.preventDefault();
+		loadMediaBrowser(this.dataset.addFor);
+	}
+
+	function addContentButtonEvent(e) {
+		e.preventDefault();
+		addTarget = this;
+		addContent(this.dataset.addfor);
+	}
+
+	function contentRemoveButtonEvent(e) {
+		e.preventDefault();
+		removeTarget = this.parentElement.parentElement;
+		removeContent(this.dataset.removeFor, this.dataset.removeIndex);
+	}
+
+	function contentEditorEvents() {
+
+		$('.contentEditor__incrementor').removeEventListener('click', addContentButtonEvent, false);
+		$('.contentEditorCustom__title').removeEventListener('click', customTypeOpenEvent, false);
+		$('.contentEditor__mediaBrowserLaunch').removeEventListener('click', mediaBrowserButtonEvent, false);
+		$('.contentEditor__toolbarBtn--remove').removeEventListener('click', contentRemoveButtonEvent, false);
+
+		$('.contentEditorCustom__title').addEventListener('click', customTypeOpenEvent, false);
+		$('.contentEditor__mediaBrowserLaunch').addEventListener('click', mediaBrowserButtonEvent, false);
+		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
+		$('.contentEditor__toolbarBtn--remove').addEventListener('click', contentRemoveButtonEvent, false);
+
+		$('.contentEditor').loop(function(ce) {
+			if(ce.find('> .contentEditor__group').length >= ce.dataset.maxItems) {
+				ce.find('> .contentEditor__incrementor').loop(function(i) {
+					i.addClass('disabled');
+				});
+			}
+		});
+	}
+
+	contentEditorEvents();
+
+	
 }

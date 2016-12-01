@@ -21,19 +21,6 @@ class Content {
 	}
 }
 
-class CustomTypeContent {
-	public $fields;
-	public $title;
-
-	function __construct($t) {
-		$this->$fields = [];
-		$this->$title = $t;
-	}
-
-	function AddField($content) {
-		$this->$fields[] = $content;
-	}
-}
 
 
 

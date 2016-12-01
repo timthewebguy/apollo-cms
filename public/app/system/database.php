@@ -174,7 +174,7 @@ class DB {
 		$type = TypeController::GetType($typeName);
 		$column_data = $type->structure[$columnName];
 
-		if(get_type($column_data['type']) != null) {
+		if(TypeController::GetType($column_data['type']) != null) {
 
 			$db_data = DB::ResultArray("SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$typeName}");
 
@@ -182,7 +182,7 @@ class DB {
 				$ids = '';
 				$min = isset($column_data['min-items']) ? $column_data['min-items'] : 1;
 				for($i = 0; $i < $min; $i++) {
-					$ids .= DB::AddCustomTypeContent($column_data['type'], get_type($column_data['type']));
+					$ids .= DB::AddCustomTypeContent($column_data['type'], TypeController::GetType($column_data['type']));
 					if($i < $min-1) {
 						$ids .=',';
 					}
@@ -315,7 +315,7 @@ class DB {
 				for($i = 0; $i < $min; $i++) {
 					$ids .= DB::AddCustomTypeContent($content_type_name, $content_type_data);
 					if($i < $min-1) {
-						$ids .=',';
+						$ids .= ',';
 					}
 				}
 				$sql .= ", '{$ids}'";
@@ -346,8 +346,10 @@ class DB {
 
 
 	//removes content from the database
-	public function RemoveContent($page, $name, $data) {
-		$index = DB::GetContentHighestIndex($page, $name);
+	public function RemoveContent($page, $name, $data, $index = null) {
+		if($index == null) {
+			$index = DB::GetContentHighestIndex($page, $name);
+		}
 		$type_name = $data['type'];
 		$type_data = TypeController::GetType($type_name);
 		$row_data = DB::ResultArray("SELECT * FROM " . CONTENT_TABLE . " WHERE content_name='{$name}' AND content_page='{$page}' AND content_index='{$index}'")[0];

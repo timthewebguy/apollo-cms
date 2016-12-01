@@ -7,50 +7,11 @@ class DashboardController {
 	}
 
 	function load() {
-		//Get the pages
-		$current_page = PageController::GetFirstPageName();
+		$page = PageController::GetFirstPageName();
 
-		$this->page($current_page);
+		$this->page($page);
 	}
 
-	/*
-
-
-	function draw_content_editor($name, $data, $page_name) {
-
-		$view = $this->get_view($data['type']);
-
-		$content = get_content($page_name, $name);
-
-		include (VIEWS . '/contentEditor/contentEditor.php');
-
-	}
-
-	function draw_custom_content($parent_name, $type_data, $c_data) {
-		foreach($type_data['contents'] as $content_name => $data) {
-			echo $data['type'];
-		  $view = $this->get_view($data['type']);
-
-		  $name = $parent_name . '-' . $content_name;
-
-
-		  $content = [];
-		  
-		  for($i = 0; $i < count($c_data[$content_name]); $i++) {
-		  	array_push($content, []);
-		  	$content[$i]['index'] = $i;
-		  	$content[$i]['content_value'] = $c_data[$content_name];
-		  	$content[$i]['content_type'] = $data['type'];
-		  }
-
-		  //var_dump($c_data);
-
-
-		  include (VIEWS . '/contentEditor/contentEditor.php');
-
-		  //echo '<br><br>';
-		}
-	}*/
 
 	function draw_editors($page) {
 		$cc = new ContentController();

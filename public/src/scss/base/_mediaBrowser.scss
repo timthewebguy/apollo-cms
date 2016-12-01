@@ -6,7 +6,8 @@
 	right:0;
 	z-index:999;
 	padding:1em;
-	background-color:rgba(0,0,0,0.75);
+	background-color:rgba(0,0,0,0.5);
+	backdrop-filter:blur(0.2em);
 	
 	&::after {
 		content:"";
