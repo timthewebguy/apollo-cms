@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 class DB {
@@ -40,10 +40,10 @@ class DB {
 			//create the tables
 
 			if(DB::Query("SHOW TABLES LIKE " . TYPES_TABLE)->num_rows != 1) {
-				DB::Query("CREATE TABLE `" . TYPES_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT,`type_name` varchar(255) DEFAULT NULL,`type_content` longtext,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				DB::Query("CREATE TABLE `" . TYPES_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `type_name` varchar(255) DEFAULT NULL, `type_content` longtext, `type_guid_prefix` varchar(5) DEFAULT '', PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;");
 			}
 			if(DB::Query("SHOW TABLES LIKE " . CONTENT_TABLE)->num_rows != 1) {
-				DB::Query("CREATE TABLE `" . CONTENT_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT,`content_name` varchar(255) DEFAULT NULL,`content_index` int(11) DEFAULT NULL,`content_value` longtext,`content_page` varchar(255) DEFAULT NULL,`content_type` varchar(255) DEFAULT NULL,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+				DB::Query("CREATE TABLE `" . CONTENT_TABLE . "` ( `id` int(11) unsigned NOT NULL AUTO_INCREMENT, `guid` longtext DEFAULT NULL, `content_name` varchar(255) DEFAULT NULL, `content_index` int(11) DEFAULT NULL, `content_value` longtext, `content_page` varchar(255) DEFAULT NULL, `content_type` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;");
 			}
 			if(DB::Query("SHOW TABLES LIKE " . MEDIA_TABLE)->num_rows != 1) {
 				DB::Query("CREATE TABLE `" . MEDIA_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT,`media_name` varchar(255) DEFAULT NULL,`media_ext` varchar(50) DEFAULT NULL,`media_abs_path` longtext,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
@@ -61,6 +61,13 @@ class DB {
 			}
 		}
 		return $array;
+	}
+
+	public function GUID() {
+		if (function_exists('com_create_guid') === true) {
+	    return trim(com_create_guid(), '{}');
+	  }
+	  return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 	}
 
 
@@ -159,7 +166,7 @@ class DB {
 				//Build the contents string for the current YAML type
 				$new_type_content = DB::GenerateTypeContentString($type->structure);
 
-				DB::Query("UPDATE " . TYPES_TABLE . " SET type_content='{$new_type_content}' WHERE type_name='{$db_type_data['type_name']}'");		
+				DB::Query("UPDATE " . TYPES_TABLE . " SET type_content='{$new_type_content}' WHERE type_name='{$db_type_data['type_name']}'");
 
 			}
 		}
@@ -189,7 +196,7 @@ class DB {
 				}
 				DB::Query("UPDATE " . DATABASE_TABLE_PREFIX . "type_{$typeName} SET {$columnName}='{$ids}' WHERE id={$db_row_data['id']}");
 			}
-		} 
+		}
 	}
 
 
@@ -211,7 +218,7 @@ class DB {
 
 	//adds a type to the database
 	public function AddType($type) {
-		$sql = "CREATE TABLE " . DATABASE_TABLE_PREFIX . "type_{$type->name} (id INT NOT NULL AUTO_INCREMENT";
+		$sql = "CREATE TABLE " . DATABASE_TABLE_PREFIX . "type_{$type->name} (id INT NOT NULL AUTO_INCREMENT, guid LONGTEXT";
 		$type_content = '';
 		foreach ($type->structure as $column => $column_data) {
 			$sql .= ", {$column} LONGTEXT";
@@ -221,7 +228,14 @@ class DB {
 		}
 		$sql .= ", PRIMARY KEY (ID))";
 		DB::Query($sql);
-		DB::Query("INSERT INTO " . TYPES_TABLE . " (type_name, type_content) VALUES ('{$type->name}','{$type_content}')");
+		$type_guid_prefix = random_int(1000, 9999);
+		DB::Query("INSERT INTO " . TYPES_TABLE . " (type_name, type_content, type_guid_prefix) VALUES ('{$type->name}','{$type_content}','{$type_guid_prefix}')");
+	}
+
+	//gets the GUID prefix of a customt type table
+	public function GetCustomTypeGUIDPrefix($type_name) {
+		$response = DB::Query("SELECT type_guid_prefix FROM " . TYPES_TABLE . " WHERE type_name='{$type_name}'");
+		return $response->fetch_assoc()['type_guid_prefix'];
 	}
 
 
@@ -242,8 +256,9 @@ class DB {
 		}
 
 		$add_content_counter = $min - $num_rows;
+		$guid = '0000--' . DB::GUID(); //defined here to ensure it is global for this content
 		while ($add_content_counter > 0) {
-			DB::AddContent($page, $name, $data);
+			DB::AddContent($page, $name, $data, $guid);
 			$add_content_counter--;
 		}
 
@@ -284,17 +299,27 @@ class DB {
 
 
 	//adds content to the database
-	public function AddContent($page, $name, $data) {
+	public function AddContent($page, $name, $data, $guid = '') {
 		$index = DB::GetContentNextIndex($page, $name);
 		$type_name = $data['type'];
 		$type_data = TypeController::GetType($type_name);
+
+		if($guid == '') {//called outside of db generation
+			$db_data = DB::ResultArray("SELECT * FROM " . CONTENT_TABLE . " WHERE content_name='{$name}' AND content_page=
+			'{$page}'");
+			if(count($db_data) > 0) { // grab the old guid
+				$guid = $db_data[0]['guid'];
+			} else { // lol wtf happened
+				$guid = '0000--' . DB::GUID();
+			}
+		}
 
 		$value = '';
 
 		if($type_data != null) {
 			$value = DB::AddCustomTypeContent($type_name, $type_data);
 		}
-		DB::Query("INSERT INTO " . CONTENT_TABLE . " VALUES (NULL, '{$name}', '{$index}', '{$value}', '{$page}', '{$type_name}')");
+		DB::Query("INSERT INTO " . CONTENT_TABLE . " VALUES (NULL, '{$guid}', '{$name}', '{$index}', '{$value}', '{$page}', '{$type_name}')");
 	}
 
 
@@ -302,7 +327,9 @@ class DB {
 	//recursively adds custom type content to the respective tables
 	public function AddCustomTypeContent($type_name, $type) {
 		$id = '';
-		$sql = "INSERT INTO " . DATABASE_TABLE_PREFIX . "type_{$type_name} VALUES (NULL";
+		$guid = DB::GetCustomTypeGUIDPrefix($type_name) . '--' . DB::GUID();
+
+		$sql = "INSERT INTO " . DATABASE_TABLE_PREFIX . "type_{$type_name} VALUES (NULL, '{$guid}'";
 
 		foreach($type->structure as $type_content => $type_content_data) {
 			$content_type_name = $type_content_data['type'];
@@ -377,4 +404,28 @@ class DB {
 		DB::Query("DELETE FROM " . DATABASE_TABLE_PREFIX . "type_{$type_name} WHERE id={$content_id}");
 	}
 
+
+
+	//selects content from the database
+	public function GetContent($page, $name, $index = null) {
+		$sql = "SELECT * FROM " . CONTENT_TABLE . " WHERE content_name='{$name}' AND content_page='{$page}' ";
+		if($index == null) {
+			$sql .= "ORDER BY content_index";
+		} else {
+			$sql .= "AND content_index='{$index}'";
+		}
+
+		$response = DB::ResultArray($sql);
+
+		return $response;
+	}
+
+	//selects content from the custom type database
+	public function GetCustomTypecontent($type, $index) {
+		$sql = "SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type} WHERE id='{$index}'";
+
+		$response = DB::ResultArray($sql);
+
+		return $response;
+	}
 }

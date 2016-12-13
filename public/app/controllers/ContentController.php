@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 class ContentController {
 
@@ -28,10 +28,12 @@ class ContentController {
 			$values[] = $entry['content_value'];
 		}
 
+		$guid = $db_entries[0]['guid'];
+
 		$minValues = isset($content_data['min-items']) ? $content_data['min-items'] : 1;
 		$maxValues = isset($content_data['max-items']) ? $content_data['max-items'] : 1;
 
-		$content = new Content($name, $page, $description, $type, $values, $minValues, $maxValues);
+		$content = new Content($name, $page, $description, $type, $values, $guid, $minValues, $maxValues);
 		return $content;
 	}
 
@@ -47,7 +49,7 @@ class ContentController {
 				$view = VIEWS . '/contentEditor/contentEditor_image.php';
 				break;
 			default:
-				$view =VIEWS . '/contentEditor/contentEditor_custom.php';
+				$view = VIEWS . '/contentEditor/contentEditor_custom.php';
 				break;
 		}
 		return $view;
@@ -57,12 +59,12 @@ class ContentController {
 		$view = $this->get_view($content);
 
 		include VIEWS . '/contentEditor/contentEditor.php';
-	} 
+	}
 
 	function draw_custom_editor($id, $parent, $index) {
 		$type_name = $parent->type;
 		$type_data = TypeController::GetType($parent->type);
-		
+
 
 		foreach($type_data->structure as $content_name=>$content_data) {
 				$db_data = DB::ResultArray("SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type_name} WHERE id = '{$id}'")[0];
@@ -80,7 +82,9 @@ class ContentController {
 					$values = [$db_data[$content_name]];
 				}
 
-				$content = new Content($parent->name . '__' . $index . '__' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $min, $max);
+				$guid = $db_data['guid'];
+
+				$content = new Content($parent->name . '__' . $index . '__' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $guid, $min, $max);
 				$this->render($content);
 
 		}
@@ -104,12 +108,7 @@ class ContentController {
 
 			include $view;
 		} else {
-			for($i = 1; $i < count($path)-1; $i += 2) {
-
-				$parent = $path[$i];
-				$parent_index = $path[$i + 1];
-
-			}
+			var_dump($_POST['guid']);
 		}
 	}
 
@@ -127,10 +126,14 @@ class ContentController {
 			echo 'success';
 		} else {
 			var_dump($path);
-			echo $_POST['index'];
+			echo $_POST['index'] . ' ';
 
-			for($i = 1; $i < count($path) + 1; $i += 2) {
-				$content_name = 
+			$type = TypeController::GetType(ContentController::GetContent($path[1], $path[0])->type);
+
+			var_dump($db_content);
+
+			for($i = 3; $i < count($path) + 1; $i += 2) {
+
 			}
 		}
 

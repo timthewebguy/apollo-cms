@@ -2,12 +2,13 @@ function initContentEditor() {
 
 	var addTarget, removeTarget;
 
-	function addContent(addFor) {	
+	function addContent(addFor, guid) {
 
 		var formData = new FormData(),
 			xhr = new XMLHttpRequest();
 
 		formData.append('data', addFor);
+		formData.append('guid', guid);
 
 		xhr.onload = function() {
 			addTarget.insertAdjacentHTML('beforebegin', this.responseText);
@@ -42,7 +43,7 @@ function initContentEditor() {
 
 	var editor = new MediumEditor('.contentEditor__wysiwyg', {
 		toolbar: {
-			buttons: [{ name:'bold', contentDefault:glyphicon('bold')}, 
+			buttons: [{ name:'bold', contentDefault:glyphicon('bold')},
 								{ name:'italic', contentDefault:glyphicon('italic')},
 								{ name:'anchor', contentDefault:glyphicon('link')},
 								{ name:'justifyLeft', contentDefault:glyphicon('align-left')},
@@ -61,7 +62,7 @@ function initContentEditor() {
 	function customTypeOpenEvent() {
 		var p = this.parentElement;
 		var i = this.nextElement();
-		
+
 		p.style.height = (i.getBoundingClientRect().height + this.offsetHeight) + 'px';
 
 		if(p.hasClass('open')) {
@@ -81,7 +82,7 @@ function initContentEditor() {
 	function addContentButtonEvent(e) {
 		e.preventDefault();
 		addTarget = this;
-		addContent(this.dataset.addfor);
+		addContent(this.dataset.addfor, this.parentElement.dataset.guid);
 	}
 
 	function contentRemoveButtonEvent(e) {
@@ -113,7 +114,7 @@ function initContentEditor() {
 
 	contentEditorEvents();
 
-	
+
 }
 
 

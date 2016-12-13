@@ -1,7 +1,7 @@
 
-<div class="contentEditor" id="<?php echo 'content__' . $content->page . '__' . $content->name ?>" data-min-items="<?php echo $content->minValues ?>" data-max-items="<?php echo $content->maxValues ?>">
+<div class="contentEditor" id="<?php echo 'content__' . $content->page . '__' . $content->name ?>" data-min-items="<?php echo $content->minValues ?>" data-max-items="<?php echo $content->maxValues ?>" data-guid="<?php echo $content->guid; ?>">
 	<label class="contentEditor__label" title="<?php echo $content->description ?>"><?php echo preg_replace('/([0-9\-(\_\_)])/', ' ', $content->name); ?></label>
-	<?php 
+	<?php
 	foreach($content->values as $index => $value) {
 		include $view;
 	}

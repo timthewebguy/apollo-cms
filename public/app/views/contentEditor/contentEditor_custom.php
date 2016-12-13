@@ -3,12 +3,10 @@
 	<section class="contentEditorCustom__container">
 		<div class="contentEditorCustom__title"><?php echo $index; ?></div>
 		<div class="contentEditorCustom__inner">
-			<?php 
-				$this->draw_custom_editor($value, $content, $index); 
+			<?php
+				$this->draw_custom_editor($value, $content, $index);
 			?>
 		</div>
 	</section>
 	<?php if($content->minValues > 1 || ($content->maxValues > 1 || $content->maxValues == 'unlimited')) {include 'contentEditor_toolbar.php';} ?>
 </fieldset>
-
-
