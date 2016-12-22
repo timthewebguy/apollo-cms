@@ -232,10 +232,29 @@ class DB {
 		DB::Query("INSERT INTO " . TYPES_TABLE . " (type_name, type_content, type_guid_prefix) VALUES ('{$type->name}','{$type_content}','{$type_guid_prefix}')");
 	}
 
-	//gets the GUID prefix of a customt type table
+
+
+	//gets the GUID prefix of a custom type table
 	public function GetCustomTypeGUIDPrefix($type_name) {
 		$response = DB::Query("SELECT type_guid_prefix FROM " . TYPES_TABLE . " WHERE type_name='{$type_name}'");
 		return $response->fetch_assoc()['type_guid_prefix'];
+	}
+
+
+
+	//gets the custom type name by a GUID prefix
+	public function GetCustomTypeNameByPrefix($prefix) {
+		$response = DB::Query("SELECT type_name FROM " . TYPES_TABLE . " WHERE type_guid_prefix='{$prefix}'");
+		return $response->fetch_assoc()['type_name'];
+	}
+
+	//gets the id by a GUID
+	public function GetIDByGUID($guid) {
+		$prefix = explode('--', $guid)[0];
+		$table = $prefix == '0000' ? CONTENT_TABLE : DATABASE_TABLE_PREFIX . 'type_' . DB::GetCustomTypeNameByPrefix($prefix);
+
+		$response = DB::Query("SELECT id FROM {$table} WHERE guid='{$guid}'");
+		return $response->fetch_assoc()['id'];
 	}
 
 
@@ -326,7 +345,6 @@ class DB {
 
 	//recursively adds custom type content to the respective tables
 	public function AddCustomTypeContent($type_name, $type) {
-		$id = '';
 		$guid = DB::GetCustomTypeGUIDPrefix($type_name) . '--' . DB::GUID();
 
 		$sql = "INSERT INTO " . DATABASE_TABLE_PREFIX . "type_{$type_name} VALUES (NULL, '{$guid}'";
@@ -421,11 +439,24 @@ class DB {
 	}
 
 	//selects content from the custom type database
-	public function GetCustomTypecontent($type, $index) {
-		$sql = "SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type} WHERE id='{$index}'";
+	public function GetCustomTypecontent($type, $id) {
+		$sql = "SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type} WHERE id='{$id}'";
 
 		$response = DB::ResultArray($sql);
 
 		return $response;
+	}
+
+
+
+	public function UpdateContent($guid, $value, $target = 'content_value') {
+
+		$prefix = explode('--', $guid)[0];
+
+		$table = $prefix == '0000' ? TYPES_TABLE : DATABASE_TABLE_PREFIX . 'type_' . DB::GetCustomTypeNameByPrefix($prefix);
+
+		$sql = "UPDATE {$table} SET {$target}='{$value}' WHERE guid='{$guid}'";
+
+		DB::Query($sql);
 	}
 }

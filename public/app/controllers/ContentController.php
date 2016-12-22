@@ -67,25 +67,25 @@ class ContentController {
 
 
 		foreach($type_data->structure as $content_name=>$content_data) {
-				$db_data = DB::ResultArray("SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type_name} WHERE id = '{$id}'")[0];
+			$db_data = DB::ResultArray("SELECT * FROM " . DATABASE_TABLE_PREFIX . "type_{$type_name} WHERE id = '{$id}'")[0];
 
-				$isCustomType = TypeController::IsCustomType($content_data['type']);
+			$isCustomType = TypeController::IsCustomType($content_data['type']);
 
-				$min = isset($content_data['min-items']) && $isCustomType ? $content_data['min-items'] : 1;
-				$max = isset($content_data['max-items']) && $isCustomType ? $content_data['max-items'] : 1;
+			$min = isset($content_data['min-items']) && $isCustomType ? $content_data['min-items'] : 1;
+			$max = isset($content_data['max-items']) && $isCustomType ? $content_data['max-items'] : 1;
 
-				$values = [];
+			$values = [];
 
-				if($isCustomType) {
-					$values = explode(',', $db_data[$content_name]);
-				} else {
-					$values = [$db_data[$content_name]];
-				}
+			if($isCustomType) {
+				$values = explode(',', $db_data[$content_name]);
+			} else {
+				$values = [$db_data[$content_name]];
+			}
 
-				$guid = $db_data['guid'];
+			$guid = $db_data['guid'];
 
-				$content = new Content($parent->name . '__' . $index . '__' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $guid, $min, $max);
-				$this->render($content);
+			$content = new Content($parent->name . '__' . $index . '__' . $content_name, $parent->page, $content_data['description'], $content_data['type'], $values, $guid, $min, $max);
+			$this->render($content);
 
 		}
 	}
@@ -96,8 +96,9 @@ class ContentController {
 
 		$path = explode('__', $_POST['data']);
 
+		$page = PageController::GetPage($path[0]);
+
 		if(count($path) == 2) {
-			$page = PageController::GetPage($path[0]);
 
 			DB::AddContent($path[0], $path[1], $page->contents[$path[1]]);
 
@@ -108,7 +109,36 @@ class ContentController {
 
 			include $view;
 		} else {
-			var_dump($_POST['guid']);
+
+			$guid_prefix = explode('--', $_POST['guid'])[0];
+			$type_name = DB::GetCustomTypeNameByPrefix($guid_prefix);
+			$type = TypeController::GetType($type_name);
+
+			$value = $path[count($path) - 1];
+
+			$type_to_add = $type->structure[$value]['type'];
+			$type_to_add_data = TypeController::GetType($type_to_add);
+
+			$id = DB::AddCustomTypeContent($type_to_add, $type_to_add_data);
+
+			$current_content = DB::GetCustomTypeContent($type_name, DB::GetIDByGUID($_POST['guid']))[0];
+			$added_content = DB::GetCustomTypeContent($type_to_add, $id);
+
+			DB::UpdateContent($_POST['guid'], $current_content[$value] . ',' . $id, $value);
+			//recalculate current_content after the UpdateContent
+			$current_content = DB::GetCustomTypeContent($type_name, DB::GetIDByGUID($_POST['guid']))[0];
+
+			$name = array_splice($path, 0, 1);
+			$content = new Content($path[0], join('__', $name), 'hello world', $type_to_add, [$id],  $added_content[0]['guid'], $type->structure[$value]['min-items'], $type->structure[$value]['max-items']);
+
+			var_dump($content);
+			//$value = $id;
+			$index = count(explode(',', $current_content[$value])) - 1;
+			$view = $this->get_view($content);
+
+			//echo $view;
+
+			include $view;
 		}
 	}
 
