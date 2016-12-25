@@ -33,6 +33,8 @@ HERO_SLIDE:
       type: text
       description: 'the text of the hero slide'
     buttons:
-      type: BUTTON
+      type: array
+      item-type: BUTTON
+      description: 'the ctas of the slide'
       min-items: 1
-      max-items: 3
+      max-items: 4

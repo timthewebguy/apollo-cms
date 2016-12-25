@@ -3,10 +3,53 @@
 class ContentController {
 
 	function __construct() {
-		require_once MODELS . '/Content_model.php';
+		require_once MODELS . '/ContentModel.php';
 	}
 
-	public function GetContent($name, $page, $content_data = []) {
+	public function CreateContent($group, $name, $data, $description = '') {
+		require_once(APP_PATH . '/system/database.php');
+
+		$slug = strtolower(preg_replace('/ /', '-', $name));
+
+		$id = DB::Query("INSERT INTO " . CONTENT_TABLE . "VALUES (NULL, '{$group}', '{$name}', '{$slug}', '{$data->guid}', '{$description}')");
+
+		return new Content($id, $name, $slug, $guid, $group, $data, $description);
+	}
+
+	public function RetrieveContent($params = null, $orderby = null) {
+		//base query
+		$sql = "SELECT * FROM " . CONTENT_TABLE;
+
+		//if there are parameters, apply them
+		if($params != null) {
+			$sql .= " WHERE ";
+			//keep track of where commas shold go
+			$i = 0;
+			$count = count($params);
+			foreach($params as $param => $value) {
+				if(property_exists('Content', $param)) {
+					$sql .= $param . "='{$value}'";
+					$sql .= (++$i === $count) ? ', ' : '';
+				}
+			}
+		}
+
+		//if there is an orderby
+		if($orderby != null) {
+			$sql .= " ORDER BY " . $orderby;
+		}
+
+		$response = DB::ResultArray($sql);
+
+		if(count($response) == 1) {
+			return $response[0];
+		} else {
+			return $response;
+		}
+	}
+
+
+	/*public function GetContent($name, $page, $content_data = []) {
 		require_once MODELS . '/Content_model.php';
 
 		if($content_data == []) {
@@ -167,7 +210,7 @@ class ContentController {
 			}
 		}
 
-	}
+	}*/
 
 
 }

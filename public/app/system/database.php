@@ -20,37 +20,6 @@ class DB {
 	}
 
 
-
-	//creates the database and tables
-	public function Init() {
-
-		//connect to / create the database
-		$conn = DB::Connect();
-		if(!$conn) {
-			$conn = new mysqli(DATABASE_SERVER, DATABASE_USER, DATABASE_PASSWORD);
-			$conn->query("CREATE DATABASE " . DATABASE_NAME);
-			$conn->close();
-		}
-
-		$conn = DB::Connect();
-		if(!$conn) {
-			die("Something went wrong in connecting to / creating the database. Please check the database settings in config.php file.");
-		} else {
-			$conn->close();
-			//create the tables
-
-			if(DB::Query("SHOW TABLES LIKE " . TYPES_TABLE)->num_rows != 1) {
-				DB::Query("CREATE TABLE `" . TYPES_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `type_name` varchar(255) DEFAULT NULL, `type_content` longtext, `type_guid_prefix` varchar(5) DEFAULT '', PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;");
-			}
-			if(DB::Query("SHOW TABLES LIKE " . CONTENT_TABLE)->num_rows != 1) {
-				DB::Query("CREATE TABLE `" . CONTENT_TABLE . "` ( `id` int(11) unsigned NOT NULL AUTO_INCREMENT, `guid` longtext DEFAULT NULL, `content_name` varchar(255) DEFAULT NULL, `content_index` int(11) DEFAULT NULL, `content_value` longtext, `content_page` varchar(255) DEFAULT NULL, `content_type` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;");
-			}
-			if(DB::Query("SHOW TABLES LIKE " . MEDIA_TABLE)->num_rows != 1) {
-				DB::Query("CREATE TABLE `" . MEDIA_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT,`media_name` varchar(255) DEFAULT NULL,`media_ext` varchar(50) DEFAULT NULL,`media_abs_path` longtext,PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
-			}
-		}
-	}
-
 	//returns an associative array of the mysql query result
 	public function ResultArray($sql) {
 		$result = DB::Query($sql);
@@ -63,6 +32,47 @@ class DB {
 		return $array;
 	}
 
+
+
+	//creates the database and tables
+	public function Init() {
+
+		$conn = DB::Connect();
+		if(!$conn) {
+			//if not, direct user to the config.php file
+			show_404("<p><strong>Error Connecting To Database.</strong> Please Check Database Credentials in <code>congig.php</code></p>");
+		} else {
+
+			//we're ready to ensure the tables are in there
+
+			//Groups Table
+			DB::QUERY("CREATE TABLE `" . GROUPS_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(255) DEFAULT NULL, `slug` varchar(255) DEFAULT NULL, `guid-prefix` int(4) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+			//Content Table
+			DB::QUERY("CREATE TABLE `" . CONTENT_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(255) DEFAULT NULL, `slug` varchar(255) DEFAULT NULL, `GUID` varchar(255) DEFAULT NULL, `group` varchar(255) DEFAULT NULL, `description` longtext, `min` varchar(255) DEFAULT NULL, `max` varchar(255) DEFAULT NULL, `type` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+			//Relations Table
+			DB::QUERY("CREATE TABLE `" . RELATIONS_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `src-guid` varchar(255) DEFAULT NULL, `src-index` int(11) DEFAULT NULL, `target-guid` varchar(255) DEFAULT NULL, `target-type` varchar(255) DEFAULT NULL, `target-index` int(11) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+			//Types Table
+			DB::QUERY("CREATE TABLE `" . TYPES_TABLE . "` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(255) DEFAULT NULL, `slug` varchar(255) DEFAULT NULL, `type` varchar(8) DEFAULT NULL COMMENT 'Compound or Base', `guid-prefix` int(4) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1");
+
+			//Media Table
+			DB::QUERY("CREATE TABLE `" . MEDIA_TABLE . "` ( `id` int(11) unsigned NOT NULL AUTO_INCREMENT, `guid` varchar(255) DEFAULT NULL, `name` varchar(255) DEFAULT NULL, `path` longtext, `extension` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+
+			//Base Types
+			DB::QUERY("INSERT INTO `" . TYPES_TABLE . "` (`id`, `name`, `slug`, `type`, `guid-prefix`) VALUES (1,'text','text','base',1000), (2,'media','media','base',1100), (3,'WYSIWYG','wysiwyg','base',1110), (4,'bool','bool','base',1111)");
+		}
+
+	}
+
+
+	public function CascadeDelete($obj) {
+
+	}
+
+
+
 	public function GUID() {
 		if (function_exists('com_create_guid') === true) {
 	    return trim(com_create_guid(), '{}');
@@ -70,7 +80,7 @@ class DB {
 	  return sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 	}
 
-
+/*
 
 
 	//syncs the database with the YAML files
@@ -459,4 +469,5 @@ class DB {
 
 		DB::Query($sql);
 	}
+	*/
 }
