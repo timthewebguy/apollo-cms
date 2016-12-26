@@ -23,7 +23,9 @@ class TypeController {
 			//enter the field into the compound types fields data table
 			$param_type = $param_data['type'];
 			$param_description = $param_data['description'] == null ? '' : $param_data['description'];
-			DB::Query("INSERT INTO " . COMPOUND_TYPE_FIELDS_TABLE . " VALUES (NULL, '{$slug}', '{$param}', '{$param_type}', '{$param_description}')");
+			$min = isset($param_data['min']) ? $param_data['min'] : 1;
+			$max = isset($param_data['max']) ? $param_data['max'] : 1;
+			DB::Query("INSERT INTO " . COMPOUND_TYPE_FIELDS_TABLE . " VALUES (NULL, '{$slug}', '{$param}', '{$param_type}', '{$param_description}', {$min}, {$max})");
 
 			//add to the compound types table creation query
 			$sql .= ", `{$param}` varchar(255) DEFAULT ''";

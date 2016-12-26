@@ -14,7 +14,7 @@ class DataController {
 		//Ensure that there is never a negative amount of data
 		if($max < $min) { $max = $min; }
 
-		$guid = DB::GUID();
+		$guid = DATA_GUID_PREFIX . '--' . DB::GUID();
 
 		$type = TypeController::RetrieveType(['slug'=>$type_slug]);
 		$table = TYPE_TABLE_PREFIX . $type->slug;
@@ -23,25 +23,24 @@ class DataController {
 		for($i = 0; $i < $min; $i++) {
 
 			//value of this data object
-			$value[] = $type->guid_prefix . '--' . DB::GUID();
 
 			if($type->type == 'base') {
 
 				//Create Table Reference for this data packet
-				if($type->slug == 'media') {
-					//ID, GUID, PATH, EXTENSION, NAME
-					DB::Query("INSERT INTO {$table} VALUES (NULL, '{$value[$i]}', NULL, NULL, NULL)");
-				} else {
-					//ID, GUID, VALUE
-					DB::Query("INSERT INTO {$table} VALUES (NULL, '{$value[$i]}', NULL)");
-				}
+				$valueGUID = $type->guid_prefix . '--' . DB::GUID();
+				DB::Query("INSERT INTO {$table} VALUES (NULL, '{$valueGUID}', NULL)");
+
+				//set the value of the returned data object
+				$value[$i] = '';
 
 			} else {
 
 				//create the query
 				$valueSQL = "INSERT INTO {$table} VALUES (NULL, '{$value[$i]}'";
 				foreach($type->getFields() as $field) {
-					$valueSQL .= ", '" . DataController::CreateData($field->field_type, $field->field_min, $field->field_max)->guid . "'";
+					$data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
+					$value[$i][$field->field_name] = $data;
+					$valueSQL .= ", '" . $data->guid . "'";
 				}
 				$valueSQL .= ")";
 
