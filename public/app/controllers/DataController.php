@@ -96,7 +96,7 @@ class DataController {
 			if($db_values[$row['guid']] != null) {
 				unset($db_response[array_search($row, $db_response)]);
 			}
-			$db_values[$row['guid']][$row['order']] = $row['value'];
+			$db_values[$row['guid']][$row['data_order']] = $row['value'];
 		}
 
 		//convert db rows into Data objects

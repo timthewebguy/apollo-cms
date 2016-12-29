@@ -48,7 +48,7 @@ class Data
 			} else {
 				//base aray
 				for($i = 0; $i < count($this->value); $i++) {
-					$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND order={$i}")[0]['value'];
+					$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$i}")[0]['value'];
 					DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->type} SET value='{$this->value[$i]}' WHERE guid='{$valueGUID}'");
 				}
 			}
@@ -56,7 +56,6 @@ class Data
 	}
 
 	function Delete() {
-		echo 'Delete! ';
 		$type = TypeController::RetrieveType(['slug'=>$this->type]);
 
 		if($type->type == 'compound') {
@@ -86,5 +85,27 @@ class Data
 
 		//remove this from data table
 		DB::Query("DELETE FROM " . DATA_TABLE . " WHERE guid='{$this->guid}'");
+	}
+
+	function Swap($a, $b) {
+
+		/*if($a >= count($this->value) || $b >= count($this->value)) {
+			return $this;
+		}*/
+
+		//get the pk's for the elements to swap
+		$a_id = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$a}")[0]['id'];
+		$b_id = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$b}")[0]['id'];
+
+		//swap them
+		DB::Query("UPDATE " . DATA_TABLE . " SET data_order={$b} WHERE id={$a_id}");
+		DB::Query("UPDATE " . DATA_TABLE . " SET data_order={$a} WHERE id={$b_id}");
+
+		//swap them in the data object and return it
+		$tmp = $this->value[$a];
+		$this->value[$a] = $this->value[$b];
+		$this->value[$b] = $tmp;
+
+		return $this;
 	}
 }
