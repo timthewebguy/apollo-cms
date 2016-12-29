@@ -8,15 +8,22 @@ class ContentController {
 
 	public function CreateContent($group, $name, $data, $description = '') {
 		require_once(APP_PATH . '/system/database.php');
+		require_once(MODELS . '/ContentModel.php');
 
 		$slug = strtolower(preg_replace('/ /', '-', $name));
+		$guid = DB::GUID();
 
-		$id = DB::Query("INSERT INTO " . CONTENT_TABLE . "VALUES (NULL, '{$group}', '{$name}', '{$slug}', '{$data->guid}', '{$description}')");
+		$id = DB::Query("INSERT INTO " . CONTENT_TABLE . " VALUES (NULL, '{$guid}', '{$group}', '{$name}', '{$slug}', '{$data->guid}', '{$description}')");
 
 		return new Content($id, $name, $slug, $guid, $group, $data, $description);
 	}
 
 	public function RetrieveContent($params = null, $orderby = null) {
+
+		require_once(APP_PATH . '/system/database.php');
+		require_once(CONTROLLERS . '/DataController.php');
+		require_once(MODELS . '/ContentModel.php');
+
 		//base query
 		$sql = "SELECT * FROM " . CONTENT_TABLE;
 
@@ -27,10 +34,8 @@ class ContentController {
 			$i = 0;
 			$count = count($params);
 			foreach($params as $param => $value) {
-				if(property_exists('Content', $param)) {
-					$sql .= $param . "='{$value}'";
-					$sql .= (++$i === $count) ? ', ' : '';
-				}
+				$sql .= $param . "='{$value}'";
+				if(++$i < $count) { $sql .= " AND "; }
 			}
 		}
 
@@ -39,7 +44,13 @@ class ContentController {
 			$sql .= " ORDER BY " . $orderby;
 		}
 
-		$response = DB::ResultArray($sql);
+		echo $sql;
+
+		$db_response = DB::ResultArray($sql);
+
+		foreach($db_response as $row) {
+			$response[] = new Content($row['id'], $row['name'], $row['slug'], $row['guid'], $row['content_group'], DataController::RetrieveData(['guid'=>$row['data']]), $row['description']);
+		}
 
 		if(count($response) == 1) {
 			return $response[0];
@@ -48,7 +59,7 @@ class ContentController {
 		}
 	}
 
-
+}
 	/*public function GetContent($name, $page, $content_data = []) {
 		require_once MODELS . '/Content_model.php';
 
@@ -211,6 +222,3 @@ class ContentController {
 		}
 
 	}*/
-
-
-}

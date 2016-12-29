@@ -34,6 +34,9 @@
 
 	//$buttons = DataController::CreateData('button', 2);
 	$buttons = DataController::RetrieveData(['type'=>'button']);
+	//$content = ContentController::CreateContent('home', 'Buttons', $buttons, 'Buttons on the home page!');
+	$content = Contentcontroller::Retrievecontent(['content_group'=>'home', 'slug'=>'buttons']);
+	var_dump($content);
 	//var_dump($buttons);
 	//$buttons->value[0]['text']->value = 'A Text Value';
 	//$buttons->value[0]['link']->value = 'A Link Value';
