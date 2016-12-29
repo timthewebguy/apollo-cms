@@ -32,8 +32,10 @@
 	//$group = GroupController::CreateGroup('Home', 'HOME');
 	//$group = GroupController::RetrieveGroup(['slug'=>'home']);
 
-	//$data = DataController::CreateData('button', 3);
+	//$buttons = DataController::CreateData('button', 3);
 	$buttons = DataController::RetrieveData(['type'=>'button']);
-	$buttons->value[0]['text']->value = 'Hello World';
-	$buttons->value[0]['link']->value = 'Hello World Link Here!';
-	$buttons->Update();
+	//var_dump($buttons);
+	//$buttons->value[0]['text']->value = 'Hello World';
+	//$buttons->value[0]['link']->value = 'Hello World Link Here!';
+	//$buttons->Update();
+	$buttons->Delete();
