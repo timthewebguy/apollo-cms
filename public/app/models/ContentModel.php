@@ -29,8 +29,10 @@ class Content {
 
 	}
 
-	function Save() {
-		DB::Query("UPDATE " . CONTENT_TABLE . " SET name='{$this->name}', slug='{$this->slug}', guid='{$this->guid}', group='{$this->group}', description='{$this->description}', data='{$this->data}' WHERE id={$this->id}");
+	function Update() {
+		DB::Query("UPDATE " . CONTENT_TABLE . " SET name='{$this->name}', slug='{$this->slug}', guid='{$this->guid}', group='{$this->group}', description='{$this->description}', data='{$this->data->guid}' WHERE id={$this->id}");
+
+		$this->data->Update();
 
 		return $this;
 	}
@@ -38,6 +40,6 @@ class Content {
 	function Delete() {
 		DB::Query("DELETE FROM " . CONTENT_TABLE . " WHERE id='{$this->id}'");
 
-		DB::CascadeDelete($this);
+		$this->data->Delete();
 	}
 }

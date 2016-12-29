@@ -44,8 +44,6 @@ class ContentController {
 			$sql .= " ORDER BY " . $orderby;
 		}
 
-		echo $sql;
-
 		$db_response = DB::ResultArray($sql);
 
 		foreach($db_response as $row) {
