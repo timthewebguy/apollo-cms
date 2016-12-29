@@ -34,4 +34,6 @@
 
 	//$data = DataController::CreateData('button', 3);
 	$buttons = DataController::RetrieveData(['type'=>'button']);
-	var_dump($buttons->value[0]['text']->value);
+	$buttons->value[0]['text']->value = 'Hello World';
+	$buttons->value[0]['link']->value = 'Hello World Link Here!';
+	$buttons->Update();

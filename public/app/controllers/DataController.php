@@ -130,7 +130,7 @@ class DataController {
 			}
 
 			//generate the new data response
-			$response[] = new Data($row['guid'], $row['type'], $value, $row['min'], $row['max']);
+			$response[] = new Data($row['guid'], $row['type'], $value, intval($row['min']), intval($row['max']));
 		}
 
 		if(count($response) == 1) {
