@@ -10,13 +10,13 @@ class TypeController {
 		require_once MODELS . '/TypeModel.php';
 		require_once(APP_PATH . '/system/database.php');
 
-		$slug = strtolower(preg_replace('/ /', '-', $name));
+		$slug = strtolower(preg_replace('/[ -]/', '_', $name));
 
 		$id = DB::Query("INSERT INTO " . TYPES_TABLE . " VALUES (NULL, '{$name}', '{$slug}', '{$type}', '{$guid_prefix}')");
 
 		$tablePrefix = TYPE_TABLE_PREFIX;
 
-		$sql = "CREATE TABLE IF NOT EXISTS `{$tablePrefix}{$slug}` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT";
+		$sql = "CREATE TABLE IF NOT EXISTS `{$tablePrefix}{$slug}` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `guid` varchar(255) NOT NULL";
 
 		foreach($structure as $param => $param_data) {
 

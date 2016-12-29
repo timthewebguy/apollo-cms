@@ -23,24 +23,24 @@ class DataController {
 		for($i = 0; $i < $min; $i++) {
 
 			//value of this data object
+			$valueGUID = $type->guid_prefix . '--' . DB::GUID();
 
 			if($type->type == 'base') {
 
 				//Create Table Reference for this data packet
-				$valueGUID = $type->guid_prefix . '--' . DB::GUID();
+				//ID, GUID, VALUE
 				DB::Query("INSERT INTO {$table} VALUES (NULL, '{$valueGUID}', NULL)");
 
-				//set the value of the returned data object
 				$value[$i] = '';
 
 			} else {
 
 				//create the query
-				$valueSQL = "INSERT INTO {$table} VALUES (NULL, '{$value[$i]}'";
+				$valueSQL = "INSERT INTO {$table} VALUES (NULL, '{$valueGUID}'";
 				foreach($type->getFields() as $field) {
 					$data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
-					$value[$i][$field->field_name] = $data;
 					$valueSQL .= ", '" . $data->guid . "'";
+					$value[$i][$field->field_name] = $data;
 				}
 				$valueSQL .= ")";
 
@@ -48,7 +48,7 @@ class DataController {
 				DB::Query($valueSQL);
 			}
 
-			DB::Query("INSERT INTO " . DATA_TABLE . " VALUES (NULL, '{$guid}', '{$type_slug}', '{$value[$i]}', {$min}, {$max}, {$i})");
+			DB::Query("INSERT INTO " . DATA_TABLE . " VALUES (NULL, '{$guid}', '{$type_slug}', '{$valueGUID}', {$min}, {$max}, {$i})");
 
 		}//forloop
 
@@ -60,7 +60,12 @@ class DataController {
 	}
 
 
-	public function RetrieveContent($params = null, $orderby = null) {
+	public function RetrieveData($params = null, $orderby = null) {
+
+		require_once(APP_PATH . '/system/database.php');
+		require_once(MODELS . '/DataModel.php');
+		require_once(CONTROLLERS . '/TypeController.php');
+
 		//base query
 		$sql = "SELECT * FROM " . DATA_TABLE;
 
@@ -71,10 +76,8 @@ class DataController {
 			$i = 0;
 			$count = count($params);
 			foreach($params as $param => $value) {
-				if(property_exists('Data', $param)) {
-					$sql .= $param . "='{$value}'";
-					$sql .= (++$i === $count) ? ', ' : '';
-				}
+				$sql .= $param . "='{$value}'";
+				if(++$i < $count) { $sql .= " AND "; }
 			}
 		}
 
@@ -83,7 +86,52 @@ class DataController {
 			$sql .= " ORDER BY " . $orderby;
 		}
 
-		$response = DB::ResultArray($sql);
+		//get the db results
+		$db_response = DB::ResultArray($sql);
+		$db_values = [];
+
+		//when a data item occupies more than one row,
+		//condense it to one row with an array of values
+		foreach($db_response as $row) {
+			if($db_values[$row['guid']] != null) {
+				unset($db_response[array_search($row, $db_response)]);
+			}
+			$db_values[$row['guid']][$row['order']] = $row['value'];
+		}
+
+		//convert db rows into Data objects
+		foreach($db_response as $row) {
+			//type object
+			$type = TypeController::RetrieveType(['slug'=>$row['type']]);
+
+			$value = array();
+			$response = array();
+
+			for($i = 0; $i < count($db_values[$row['guid']]); $i++) {
+
+				//data in the type's table
+				$valueData = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$type->slug} WHERE guid='{$db_values[$row['guid']][$i]}'")[0];
+
+				//if compound, set the value to an associative array of values
+				if($type->type == 'compound') {
+					foreach($type->getFields() as $field) {
+						$field_name = $field->field_name;
+						$value[$i][$field_name] = DataController::RetrieveData(['guid'=>$valueData[$field_name]]);
+					}
+				} else {
+					$value[$i] = $valueData['value'];
+				}
+
+			}
+
+			//if the value is not of an array, reduce it to a single value
+			if($row['min'] == '1' && $row['max'] == '1') {
+				$value = $value[0];
+			}
+
+			//generate the new data response
+			$response[] = new Data($row['guid'], $row['type'], $value, $row['min'], $row['max']);
+		}
 
 		if(count($response) == 1) {
 			return $response[0];

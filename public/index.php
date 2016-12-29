@@ -25,13 +25,13 @@
 
 
 	//$type = TypeController::CreateType('Button', 'compound', 'BTN', ['text'=>['type'=>'text', 'description'=>'button text'], 'link'=>['type'=>'text', 'description'=>'button link']]);
-	$type = TypeController::RetrieveType(['slug'=>'button']);
+	//$type = TypeController::RetrieveType(['slug'=>'button']);
 
-	//TypeController::CreateType('Hero-Slide', 'compound', 'HS', ['text'=>['type'=>'text', 'description'=>'Text to be displayed on the hero slide'], 'image'=>['type'=>'media', 'description'=>'Background image of the hero slide'], 'ctas'=>['type'=>'button', 'description'=>'CTA buttons for the hero slide. Up to three can be added.', 'min'=>1, 'max'=>3]]);
+	//TypeController::CreateType('Hero Slide', 'compound', 'HS', ['text'=>['type'=>'text', 'description'=>'Text to be displayed on the hero slide'], 'image'=>['type'=>'media', 'description'=>'Background image of the hero slide'], 'ctas'=>['type'=>'button', 'description'=>'CTA buttons for the hero slide. Up to three can be added.', 'min'=>1, 'max'=>3]]);
 
 	//$group = GroupController::CreateGroup('Home', 'HOME');
 	//$group = GroupController::RetrieveGroup(['slug'=>'home']);
 
-	//$data = DataController::CreateData('hero-slide', 1);
-	$data = DataController::RetrieveData(['guid'=>'DATA--681A115D-1FAC-4BAD-BF7D-33C144384161']);
-	var_dump($data);
+	//$data = DataController::CreateData('button', 3);
+	$buttons = DataController::RetrieveData(['type'=>'button']);
+	var_dump($buttons->value[0]['text']->value);
