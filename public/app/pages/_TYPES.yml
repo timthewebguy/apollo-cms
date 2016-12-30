@@ -1,0 +1,40 @@
+
+FAQ:
+  description: 'FAQ Data type'
+  #displayValue: 'question'
+  structure:
+    question:
+      type: text
+      description: 'question of the faq'
+    answer:
+      type: wysiwyg
+      description: 'answer to the faq'
+
+BUTTON:
+  description: 'button data type'
+  displayValue: 'text'
+  structure:
+    text:
+      type: text
+      description: 'Text to be displayed in the button'
+    link:
+      type: text
+      description: 'Link the button leads to'
+
+
+HERO_SLIDE:
+  description: 'Slide Data for a hero slider'
+  #displayValue: 'text'
+  structure:
+    image:
+      type: image
+      description: 'the image of the hero slide'
+    text:
+      type: text
+      description: 'the text of the hero slide'
+    buttons:
+      type: array
+      item-type: BUTTON
+      description: 'the ctas of the slide'
+      min-items: 1
+      max-items: 4

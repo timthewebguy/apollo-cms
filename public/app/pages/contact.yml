@@ -1,0 +1,19 @@
+phone-numbers: 
+  type: text
+  description: 'Phone Number to reach us at'
+  max-items: unlimited
+  min-items: 2
+
+tagline:
+  type: text 
+  description: 'tagline for the top of the page'
+
+body-text:
+  type: wysiwyg
+  description: 'Text for the body of the page'
+  max-items: 1
+
+footer-text:
+  type: wysiwyg
+  description: 'Text for the footer of the page'
+  max-items: 1

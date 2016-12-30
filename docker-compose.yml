@@ -1,6 +1,6 @@
 # PHP Web Server
 apache:
-  container_name: yaml-cms-apache
+  container_name: apollo-apache
   build: .
   ports:
     - "8000:80"
@@ -12,7 +12,7 @@ apache:
 
 # MySQL Server
 mysql:
-  container_name: yaml-cms-mysql
+  container_name: apollo-database
   image: mysql:latest
   environment:
     - MYSQL_ROOT_PASSWORD=root
