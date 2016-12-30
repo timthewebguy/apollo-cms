@@ -25,18 +25,21 @@
 
 
 	//$type = TypeController::CreateType('Button', 'compound', 'BTN', ['text'=>['type'=>'text', 'description'=>'button text'], 'link'=>['type'=>'text', 'description'=>'button link']]);
-	//$type = TypeController::RetrieveType(['slug'=>'button']);
+	$button_type = TypeController::RetrieveType(['slug'=>'button']);
+	$button_type->addField(new CompoundTypeField('button', 'color', 'text', 'color of the button', 1, 1));
+	$button_type->removeField('color');
 
 	//TypeController::CreateType('Hero Slide', 'compound', 'HS', ['text'=>['type'=>'text', 'description'=>'Text to be displayed on the hero slide'], 'image'=>['type'=>'media', 'description'=>'Background image of the hero slide'], 'ctas'=>['type'=>'button', 'description'=>'CTA buttons for the hero slide. Up to three can be added.', 'min'=>1, 'max'=>3]]);
 
 	//$group = GroupController::CreateGroup('Home', 'HOME');
 	//$group = GroupController::RetrieveGroup(['slug'=>'home']);
 
-	$buttons = DataController::RetrieveData(['guid'=>'DATA--70E9B83E-128E-4595-8304-1C9EAB8C4F8F']);
+	//DataController::CreateData('button', 2, 5);
+	//$buttons = DataController::RetrieveData(['guid'=>'DATA--70E9B83E-128E-4595-8304-1C9EAB8C4F8F']);
 	//$buttons->AddValue();
 	//$buttons->value[2]['text']->value = 'Testing';
 	//$buttons->Update();
-	$buttons->RemoveValue(2);
+	//$buttons->RemoveValue(2);
 
 
 	//$content = ContentController::CreateContent('home', 'Buttons', $buttons, 'Buttons on the home page!');

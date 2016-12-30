@@ -14,6 +14,7 @@ class Type
 	function __construct($id, $name, $slug, $type, $guid_prefix) {
 		//include the database object for CRUD operations.
 		require_once(APP_PATH . '/system/database.php');
+		require_once(CONTROLLERS . '/DataController.php');
 
 		//set object variables
 		$this->id = $id;
@@ -69,6 +70,25 @@ class Type
 			DB::Query("INSERT INTO " . COMPOUND_TYPE_FIELDS_TABLE . " VALUES (NULL, '{$this->slug}', '{$field->field_name}', '{$field->field_type}', '{$field->field_description}', {$field->field_min}, {$field->field_max})");
 		}
 
+		DB::Query("ALTER TABLE " . TYPE_TABLE_PREFIX . "{$this->slug} ADD {$field->field_name} varchar(255) DEFAULT NULL");
+
+		$data_of_type = DataController::RetrieveData(['type'=>$this->slug], null, true);
+		foreach($data_of_type as $data) {
+			if($data->min == 1 && $data->max == 1) {
+				$fieldData = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
+				$data->value[$field->field_name] = $fieldData;
+				$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}'")[0]['value'];
+				DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->slug} SET {$field->field_name}='{$fieldData->guid}' WHERE guid='{$valueGUID}'");
+			} else {
+				for($i = 0; $i < count($data->value); $i++) {
+					$fieldData = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
+					$data->value[$i][$field->field_name] = $fieldData;
+					$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}' AND data_order={$i}")[0]['value'];
+					DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->slug} SET {$field->field_name}='{$fieldData->guid}' WHERE guid='{$valueGUID}'");
+				}
+			}
+		}
+
 		return $this;
 	}
 
@@ -76,9 +96,27 @@ class Type
 	function removeField($field_name) {
 		if($this->type != 'compound') { return null; }
 
-		if($this->hasField($field_name)) {
-			DB::Query("DELETE FROM " . COMPOUND_TYPE_FIELDS_TABLE . " WHERE type='{$this->slug}' AND field_name='{$field_name}'");
+		if(!$this->hasField($field_name)) { return; }
+		//save the field for after we delete it from the db
+		$field = $this->getField($field_name);
+
+		$data_of_type = DataController::RetrieveData(['type'=>$this->slug], null, true);
+		
+		foreach($data_of_type as $data) {
+			if($data->min == 1 && $data->max == 1) {
+				$data->value[$field->field_name]->Delete();
+			} else {
+				for($i = 0; $i < count($data->value); $i++) {
+					$data->value[$i][$field->field_name]->Delete();
+				}
+			}
 		}
+
+		//delete the field from the db
+		DB::Query("DELETE FROM " . COMPOUND_TYPE_FIELDS_TABLE . " WHERE type='{$this->slug}' AND field_name='{$field_name}'");
+
+		//drop the table column
+		DB::Query("ALTER TABLE " . TYPE_TABLE_PREFIX . "{$this->slug} DROP COLUMN {$field_name}");
 
 		return $this;
 	}

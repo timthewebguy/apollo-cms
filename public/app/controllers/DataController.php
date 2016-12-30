@@ -60,7 +60,7 @@ class DataController {
 	}
 
 
-	public function RetrieveData($params = null, $orderby = null) {
+	public function RetrieveData($params = null, $orderby = null, $forceArray = false) {
 
 		require_once(APP_PATH . '/system/database.php');
 		require_once(MODELS . '/DataModel.php');
@@ -133,7 +133,7 @@ class DataController {
 			$response[] = new Data($row['guid'], $row['type'], $value, intval($row['min']), intval($row['max']));
 		}
 
-		if(count($response) == 1) {
+		if(count($response) == 1 && !$forceArray) {
 			return $response[0];
 		} else {
 			return $response;
