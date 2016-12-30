@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 /**
 * Type Model
@@ -101,7 +101,7 @@ class Type
 		$field = $this->getField($field_name);
 
 		$data_of_type = DataController::RetrieveData(['type'=>$this->slug], null, true);
-		
+
 		foreach($data_of_type as $data) {
 			if($data->min == 1 && $data->max == 1) {
 				$data->value[$field->field_name]->Delete();

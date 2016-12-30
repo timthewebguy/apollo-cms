@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 	//Paths for directories
 	DEFINE('APP_PATH', BASEPATH . '/app');
 	DEFINE('SERVERPATH', 'http://' . $_SERVER['HTTP_HOST']);

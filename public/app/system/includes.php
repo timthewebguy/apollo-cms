@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 //YAML parser
 require_once(APP_PATH . '/libraries/spyc.php');

@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 /**
 * Group Model

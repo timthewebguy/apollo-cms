@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 /**
    * Spyc -- A Simple PHP YAML Class
    * @version 0.5.1

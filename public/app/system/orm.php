@@ -1,10 +1,10 @@
-<?php 
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 function get_content($page, $name) {
 	$page_data = get_page($page);
 	$content_data = $page_data[$name];
 	$db_data = result_array("SELECT * FROM " . CONTENT_TABLE . " WHERE content_page='{$page}' AND content_name='{$name}'");
-	
+
 	for($i = 0; $i < count($db_data); $i++) {
 		if(is_custom_type($db_data[$i]['content_type'])) {
 			$db_data[$i]['content_value'] = get_custom_type_content($db_data[$i]['content_type'], $db_data[$i]['content_value'])[0];
@@ -32,5 +32,3 @@ function get_custom_type_content($type, $id) {
 	}
 	return $db_data;
 }
-
-

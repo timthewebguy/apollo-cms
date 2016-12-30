@@ -4,6 +4,11 @@
 	require_once('app/system/config.php');
 	require_once('app/system/includes.php');
 
+	require_once('app/system/installed.php');
+	if(!INSTALLED) {
+		require('app/system/install.php');
+	}
+
 	/*$class_name = (ucfirst(strtolower(isset($_GET['controller']) ? $_GET['controller'] : 'dashboard')) . 'Controller');
 	if(!class_exists($class_name)) {
 		show_404();

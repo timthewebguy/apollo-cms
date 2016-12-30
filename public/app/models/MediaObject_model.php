@@ -1,4 +1,4 @@
-<?php 
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 //Media Object Class
 class MediaObject {
@@ -14,8 +14,3 @@ class MediaObject {
 		$this->id = $i;
 	}
 }
-
-
-
-
-

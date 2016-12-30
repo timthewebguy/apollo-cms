@@ -1,4 +1,4 @@
-<?php 
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 class MediaController {
 
 	function __construct() {
@@ -21,7 +21,7 @@ class MediaController {
 					$data = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE . " WHERE id={$id}")[0];
 					$media = new MediaObject($data['media_name'], $data['media_ext'], $data['media_abs_path'], $data['id']);
 					include(VIEWS . '/mediaBrowser/mediaObject_view.php');
-					
+
 				}
 			}
 		}
@@ -45,7 +45,7 @@ class MediaController {
 
 		$media = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE);
 		$media_objects = array();
-		
+
 		foreach($media as $media_data) {
 			array_push($media_objects, new MediaObject($media_data['media_name'], $media_data['media_ext'], $media_data['media_abs_path'], $media_data['id']));
 		}
@@ -60,5 +60,5 @@ class MediaController {
 		include_once VIEWS . '/mediaBrowser/media_view.php';
 
 	}
-	
+
 }

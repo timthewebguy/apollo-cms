@@ -1,9 +1,9 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 class DashboardController {
 
 	function __construct() {
-		
+
 	}
 
 	function load() {

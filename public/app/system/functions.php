@@ -1,4 +1,4 @@
-<?php
+<?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 
 function show_404($msg = null) {
 	if($msg == null)  {
