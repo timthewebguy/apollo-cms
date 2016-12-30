@@ -32,9 +32,14 @@
 	//$group = GroupController::CreateGroup('Home', 'HOME');
 	//$group = GroupController::RetrieveGroup(['slug'=>'home']);
 
-	//$buttons = DataController::CreateData('button', 2);
+	$buttons = DataController::RetrieveData(['guid'=>'DATA--70E9B83E-128E-4595-8304-1C9EAB8C4F8F']);
+	//$buttons->AddValue();
+	//$buttons->value[2]['text']->value = 'Testing';
+	//$buttons->Update();
+	$buttons->RemoveValue(2);
+
+
 	//$content = ContentController::CreateContent('home', 'Buttons', $buttons, 'Buttons on the home page!');
-	$buttons = Contentcontroller::Retrievecontent(['content_group'=>'home', 'slug'=>'buttons']);
-	$buttons->Delete();
+
 	//$buttons->Swap(0, 1);
 	//$buttons->Delete();

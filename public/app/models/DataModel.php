@@ -87,7 +87,7 @@ class Data
 		DB::Query("DELETE FROM " . DATA_TABLE . " WHERE guid='{$this->guid}'");
 	}
 
-	function Swap($a, $b) {
+	function SwapValues($a, $b) {
 
 		/*if($a >= count($this->value) || $b >= count($this->value)) {
 			return $this;
@@ -108,4 +108,87 @@ class Data
 
 		return $this;
 	}
+
+	function AddValue() {
+		//make sure this data is an array
+		if($this->min == $this->max) { return; }
+
+		//make sure we are not at capacity
+		if(count($this->value) == $this->max) { return; }
+
+		$type = Typecontroller::RetrieveType(['slug'=>$this->type]);
+		$valueGUID = $type->guid_prefix . '--' . DB::GUID();
+		$order = count($this->value);
+
+		if($type->type == 'base') {
+
+			DB::Query("INSERT INTO " . TYPE_TABLE_PREFIX . "{$type->slug} VALUES (NULL, '{$valueGUID}', '')");
+			$this->value[$order] = '';
+
+		} else {
+
+			$sql = "INSERT INTO " . TYPE_TABLE_PREFIX . "{$type->slug} VALUES (NULL, '{$valueGUID}'";
+			foreach($type->getFields() as $field) {
+				$field_data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
+				$sql .= ", '{$field_data->guid}'";
+				$this->value[$order][$field->field_name] = $field_data;
+			}
+			$sql .= ")";
+			DB::Query($sql);
+
+		}
+
+		DB::Query("INSERT INTO " . DATA_TABLE . " VALUES (NULL, '{$this->guid}', '{$this->type}', '{$valueGUID}', {$this->min}, {$this->max}, {$order})");
+
+		return $this;
+
+	}
+
+	function RemoveValue($index) {
+		//make sure this data is an array
+		if($this->min == $this->max) { return; }
+
+		//make sure we are not at capacity
+		if(count($this->value) == $this->min) { return; }
+
+		//translate keywords into int indexes
+		if($index == 'last') { $index = count($this->value) - 1; }
+		if($index == 'first') { $index = 0; }
+
+		$type = Typecontroller::RetrieveType(['slug'=>$this->type]);
+
+		if($type->type == 'base') {
+
+			$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$order}")[0]['value'];
+			DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$type->slug} WHERE guid='{$valueGUID}'");
+
+		} else {
+
+			foreach($type->getFields() as $field) {
+				$this->value[$index][$field->field_name]->Delete();
+			}
+
+		}
+
+		unset($this->value[$index]);
+		DB::Query("DELETE FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$index}");
+
+		$this->NormalizeOrders();
+
+	}
+
+	function NormalizeOrders() {
+
+		//make sure this data is an array
+		if($this->min == $this->max) { return; }
+
+		$db_data = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}'");
+		$i = 0;
+		foreach($db_data as $row) {
+			$id = $row['id'];
+			DB::Query("UPDATE " . DATA_TABLE . " SET data_order={$i} WHERE guid='{$this->guid}' AND id={$id}");
+			$i++;
+		}
+	}
+
 }
