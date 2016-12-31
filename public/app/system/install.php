@@ -56,6 +56,10 @@
 
 	$conn->close();
 
+	//Load the types and groups
+	TypeController::LoadTypes();
+	GroupController::LoadGroups();
+
 
 	//Update installed.php to reflect the installation status
 	$installed = fopen('installed.php', 'w');

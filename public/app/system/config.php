@@ -3,7 +3,7 @@
 	DEFINE('APP_PATH', BASEPATH . '/app');
 	DEFINE('SERVERPATH', 'http://' . $_SERVER['HTTP_HOST']);
 
-	DEFINE('PAGES', APP_PATH . '/pages');
+	DEFINE('GROUPS', APP_PATH . '/groups');
 	DEFINE('VIEWS', APP_PATH .'/views');
 	DEFINE('MODELS', APP_PATH . '/models');
 	DEFINE('CONTROLLERS', APP_PATH . '/controllers');

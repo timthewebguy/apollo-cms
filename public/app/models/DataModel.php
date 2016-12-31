@@ -8,10 +8,11 @@ class Data
 	public $guid;
 	public $type;
 	public $value;
+	public $valueGUID;
 	public $min;
 	public $max;
 
-	function __construct($guid, $type, $value, $min, $max) {
+	function __construct($guid, $type, $value, $valueGUID, $min, $max) {
 		//include the database object for CRUD operations.
 		require_once(APP_PATH . '/system/database.php');
 		require_once(CONTROLLERS . '/TypeController.php');
@@ -20,12 +21,42 @@ class Data
 		$this->guid = $guid;
 		$this->type = $type;
 		$this->value = $value;
+		$this->valueGUID = $valueGUID;
 		$this->min = $min;
 		$this->max = $max;
 	}
 
 	function Update() {
 		$type = TypeController::RetrieveType(['slug'=>$this->type]);
+
+		$prevData = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}'")[0];
+		$prevMin = $prevData['min'];
+		$prevMax = $prevData['max'];
+
+		DB::Query("UPDATE " . DATA_TABLE . " SET min={$this->min}, max={$this->max} WHERE guid='{$this->guid}'");
+
+		if($prevMin != 1 || $prevMax != 1 || $this->min != 1 || $this->max != 1) {
+
+			if(count($this->value) < $this->min) {
+				for($i = 0; $i < ($this->min - count($this->value)); $i++) {
+					$this->AddValue();
+				}
+			}
+			if(count($this->value) > $this->max) {
+				for($i = 0; $i < (count($this->value) - $this->max); $i++) {
+					$this->RemoveValue('last');
+				}
+			}
+		}
+
+		if($prevMin == 1 && $prevMax == 1 && ($this->min != 1 || $this->max != 1)) {
+			//this used to not be an array, but now it is
+			$this->value[0] = $this->value;
+		} else if($prevMin != 1 && $prevMax != 1 && $this->min == 1 && $this->max == 1) {
+			//this used to be an array but now it isn't
+			$this->value = $this->value[0];
+		}
+
 		if($type->type == 'compound') {
 			if($this->min == 1 && $this->max == 1) {
 				//compound non array
@@ -110,8 +141,6 @@ class Data
 	}
 
 	function AddValue() {
-		//make sure this data is an array
-		if($this->min == $this->max) { return; }
 
 		//make sure we are not at capacity
 		if(count($this->value) == $this->max) { return; }
@@ -145,8 +174,6 @@ class Data
 	}
 
 	function RemoveValue($index) {
-		//make sure this data is an array
-		if($this->min == $this->max) { return; }
 
 		//make sure we are not at capacity
 		if(count($this->value) == $this->min) { return; }
@@ -189,6 +216,10 @@ class Data
 			DB::Query("UPDATE " . DATA_TABLE . " SET data_order={$i} WHERE guid='{$this->guid}' AND id={$id}");
 			$i++;
 		}
+	}
+
+	function IsArray() {
+		return !($this->min==1 && $this->max == 1);
 	}
 
 }

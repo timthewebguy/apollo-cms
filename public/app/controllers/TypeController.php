@@ -80,5 +80,21 @@ class TypeController {
 		}
 	}
 
+	public function LoadTypes() {
+		//get all types in database
+		$db_types = TypeController::RetrieveType(null, null, true);
 
+		//get all types in TYPES.yaml
+		$yml_types = spyc_load_file(GROUPS . '/_TYPES.yml');
+
+		//Delete Old Types
+		foreach($db_types as $db_type) {
+			if(!isset($yml_types[$db_type->name])) {
+				$db_type->Delete();
+			}
+		}
+
+		//Update Current Types
+		//foreach()
+	}
 }

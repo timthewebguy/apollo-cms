@@ -4,10 +4,12 @@
 	require_once('app/system/config.php');
 	require_once('app/system/includes.php');
 
-	require_once('app/system/installed.php');
-	if(!INSTALLED) {
-		require('app/system/install.php');
-	}
+	//require_once('app/system/installed.php');
+	//if(!INSTALLED) {
+	//	require('app/system/install.php');
+	//}
+
+	//TypeController::LoadTypes();
 
 	/*$class_name = (ucfirst(strtolower(isset($_GET['controller']) ? $_GET['controller'] : 'dashboard')) . 'Controller');
 	if(!class_exists($class_name)) {
@@ -31,8 +33,12 @@
 
 	//$type = TypeController::CreateType('Button', 'compound', 'BTN', ['text'=>['type'=>'text', 'description'=>'button text'], 'link'=>['type'=>'text', 'description'=>'button link']]);
 	$button_type = TypeController::RetrieveType(['slug'=>'button']);
-	$button_type->addField(new CompoundTypeField('button', 'color', 'text', 'color of the button', 1, 1));
-	$button_type->removeField('color');
+	$text_field = $button_type->getField('text');
+	$text_field->field_min = 1;
+	$text_field->field_max = 1;
+	$button_type->updateField($text_field);
+	//$button_type->addField(new CompoundTypeField('button', 'color', 'text', 'color of the button', 1, 1));
+	//$button_type->removeField('color');
 
 	//TypeController::CreateType('Hero Slide', 'compound', 'HS', ['text'=>['type'=>'text', 'description'=>'Text to be displayed on the hero slide'], 'image'=>['type'=>'media', 'description'=>'Background image of the hero slide'], 'ctas'=>['type'=>'button', 'description'=>'CTA buttons for the hero slide. Up to three can be added.', 'min'=>1, 'max'=>3]]);
 
@@ -40,7 +46,8 @@
 	//$group = GroupController::RetrieveGroup(['slug'=>'home']);
 
 	//DataController::CreateData('button', 2, 5);
-	//$buttons = DataController::RetrieveData(['guid'=>'DATA--70E9B83E-128E-4595-8304-1C9EAB8C4F8F']);
+	//$buttons = DataController::RetrieveData(['guid'=>'DATA--3B3C19EE-5271-4185-ACF9-39CFCE7C8AC2']);
+	//var_dump($buttons);
 	//$buttons->AddValue();
 	//$buttons->value[2]['text']->value = 'Testing';
 	//$buttons->Update();

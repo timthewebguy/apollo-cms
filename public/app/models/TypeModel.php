@@ -30,6 +30,16 @@ class Type
 
 	function Delete() {
 		DB::Query("DELETE FROM " . TYPES_TABLE . " WHERE id='{$this->id}'");
+
+		$types = DB::ResultArray("SELECT DISTINCT type FROM " . COMPOUND_TYPE_FIELDS_TABLE . " WHERE field_type='{$this->slug}'");
+		foreach($types as $type) {
+			TypeController::RetrieveType(['slug'=>$type['type']])->removeField($this->slug);
+		}
+
+		$data = DataController::RetrieveData(['type'=>$this->slug]);
+		foreach($data as $d) {
+			$d->Delete();
+		}
 	}
 
 	//gets the compound type fields
@@ -119,6 +129,31 @@ class Type
 		DB::Query("ALTER TABLE " . TYPE_TABLE_PREFIX . "{$this->slug} DROP COLUMN {$field_name}");
 
 		return $this;
+	}
+
+	function updateField($field) {
+
+		DB::Query("UPDATE " . COMPOUND_TYPE_FIELDS_TABLE . " SET field_type='{$field->field_type}', field_description='{$field->field_description}', field_min={$field->field_min}, field_max={$field->field_max} WHERE type='{$field->type}' AND field_name='{$field->field_name}'");
+
+		$data = DataController::RetrieveData(['type'=>$this->slug], null, true);
+		foreach($data as $d) {
+			if($d->IsArray()) {
+				for($i = 0; $i < count($d->valueGUID); $i++) {
+					$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID[$i]}'")[0];
+					$value = DataController::RetrieveData(['guid'=>$dbRow[$field->field_name]]);
+					$value->min = $field->field_min;
+					$value->max = $field->field_max;
+					$value->Update();
+				}
+			} else {
+				$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID}'")[0];
+				$value = DataController::RetrieveData(['guid'=>$dbRow[$field->field_name]]);
+				$value->min = $field->field_min;
+				$value->max = $field->field_max;
+				$value->Update();
+			}
+
+		}
 	}
 }
 

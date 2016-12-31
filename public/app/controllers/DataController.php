@@ -23,20 +23,20 @@ class DataController {
 		for($i = 0; $i < $min; $i++) {
 
 			//value of this data object
-			$valueGUID = $type->guid_prefix . '--' . DB::GUID();
+			$valueGUID[$i] = $type->guid_prefix . '--' . DB::GUID();
 
 			if($type->type == 'base') {
 
 				//Create Table Reference for this data packet
 				//ID, GUID, VALUE
-				DB::Query("INSERT INTO {$table} VALUES (NULL, '{$valueGUID}', NULL)");
+				DB::Query("INSERT INTO {$table} VALUES (NULL, '{$valueGUID[$i]}', NULL)");
 
 				$value[$i] = '';
 
 			} else {
 
 				//create the query
-				$valueSQL = "INSERT INTO {$table} VALUES (NULL, '{$valueGUID}'";
+				$valueSQL = "INSERT INTO {$table} VALUES (NULL, '{$valueGUID[$i]}'";
 				foreach($type->getFields() as $field) {
 					$data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
 					$valueSQL .= ", '" . $data->guid . "'";
@@ -48,15 +48,16 @@ class DataController {
 				DB::Query($valueSQL);
 			}
 
-			DB::Query("INSERT INTO " . DATA_TABLE . " VALUES (NULL, '{$guid}', '{$type_slug}', '{$valueGUID}', {$min}, {$max}, {$i})");
+			DB::Query("INSERT INTO " . DATA_TABLE . " VALUES (NULL, '{$guid}', '{$type_slug}', '{$valueGUID[$i]}', {$min}, {$max}, {$i})");
 
 		}//forloop
 
 		if($min == 1 && $max == 1 && count($value) == 1) {
 			$value = $value[0];
+			$valueGUID = $valueGUID[0];
 		}
 
-		return new Data($guid, $type_slug, $value, $min, $max);
+		return new Data($guid, $type_slug, $value, $valueGUID, $min, $max);
 	}
 
 
@@ -105,6 +106,7 @@ class DataController {
 			$type = TypeController::RetrieveType(['slug'=>$row['type']]);
 
 			$value = array();
+			$valueGUID = array();
 			$response = array();
 
 			for($i = 0; $i < count($db_values[$row['guid']]); $i++) {
@@ -122,15 +124,17 @@ class DataController {
 					$value[$i] = $valueData['value'];
 				}
 
+				$valueGUID[$i] = $db_values[$row['guid']][$i];
 			}
 
 			//if the value is not of an array, reduce it to a single value
 			if($row['min'] == '1' && $row['max'] == '1') {
 				$value = $value[0];
+				$valueGUID = $valueGUID[0];
 			}
 
 			//generate the new data response
-			$response[] = new Data($row['guid'], $row['type'], $value, intval($row['min']), intval($row['max']));
+			$response[] = new Data($row['guid'], $row['type'], $value, $valueGUID, intval($row['min']), intval($row['max']));
 		}
 
 		if(count($response) == 1 && !$forceArray) {
