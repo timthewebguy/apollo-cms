@@ -83,18 +83,20 @@ class Type
 		DB::Query("ALTER TABLE " . TYPE_TABLE_PREFIX . "{$this->slug} ADD {$field->field_name} varchar(255) DEFAULT NULL");
 
 		$data_of_type = DataController::RetrieveData(['type'=>$this->slug], null, true);
-		foreach($data_of_type as $data) {
-			if($data->min == 1 && $data->max == 1) {
-				$fieldData = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
-				$data->value[$field->field_name] = $fieldData;
-				$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}'")[0]['value'];
-				DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->slug} SET {$field->field_name}='{$fieldData->guid}' WHERE guid='{$valueGUID}'");
-			} else {
-				for($i = 0; $i < count($data->value); $i++) {
+		if($data_of_type) {
+			foreach($data_of_type as $data) {
+				if($data->min == 1 && $data->max == 1) {
 					$fieldData = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
-					$data->value[$i][$field->field_name] = $fieldData;
-					$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}' AND data_order={$i}")[0]['value'];
+					$data->value[$field->field_name] = $fieldData;
+					$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}'")[0]['value'];
 					DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->slug} SET {$field->field_name}='{$fieldData->guid}' WHERE guid='{$valueGUID}'");
+				} else {
+					for($i = 0; $i < count($data->value); $i++) {
+						$fieldData = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
+						$data->value[$i][$field->field_name] = $fieldData;
+						$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$data->guid}' AND data_order={$i}")[0]['value'];
+						DB::Query("UPDATE " . TYPE_TABLE_PREFIX . "{$this->slug} SET {$field->field_name}='{$fieldData->guid}' WHERE guid='{$valueGUID}'");
+					}
 				}
 			}
 		}
@@ -112,12 +114,14 @@ class Type
 
 		$data_of_type = DataController::RetrieveData(['type'=>$this->slug], null, true);
 
-		foreach($data_of_type as $data) {
-			if($data->min == 1 && $data->max == 1) {
-				$data->value[$field->field_name]->Delete();
-			} else {
-				for($i = 0; $i < count($data->value); $i++) {
-					$data->value[$i][$field->field_name]->Delete();
+		if($data_of_type) {
+			foreach($data_of_type as $data) {
+				if($data->min == 1 && $data->max == 1) {
+					$data->value[$field->field_name]->Delete();
+				} else {
+					for($i = 0; $i < count($data->value); $i++) {
+						$data->value[$i][$field->field_name]->Delete();
+					}
 				}
 			}
 		}
@@ -136,23 +140,24 @@ class Type
 		DB::Query("UPDATE " . COMPOUND_TYPE_FIELDS_TABLE . " SET field_type='{$field->field_type}', field_description='{$field->field_description}', field_min={$field->field_min}, field_max={$field->field_max} WHERE type='{$field->type}' AND field_name='{$field->field_name}'");
 
 		$data = DataController::RetrieveData(['type'=>$this->slug], null, true);
-		foreach($data as $d) {
-			if($d->IsArray()) {
-				for($i = 0; $i < count($d->valueGUID); $i++) {
-					$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID[$i]}'")[0];
+		if($data) {
+			foreach($data as $d) {
+				if($d->IsArray()) {
+					for($i = 0; $i < count($d->valueGUID); $i++) {
+						$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID[$i]}'")[0];
+						$value = DataController::RetrieveData(['guid'=>$dbRow[$field->field_name]]);
+						$value->min = $field->field_min;
+						$value->max = $field->field_max;
+						$value->Update();
+					}
+				} else {
+					$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID}'")[0];
 					$value = DataController::RetrieveData(['guid'=>$dbRow[$field->field_name]]);
 					$value->min = $field->field_min;
 					$value->max = $field->field_max;
 					$value->Update();
 				}
-			} else {
-				$dbRow = DB::ResultArray("SELECT * FROM " . TYPE_TABLE_PREFIX . "{$this->slug} WHERE guid='{$d->valueGUID}'")[0];
-				$value = DataController::RetrieveData(['guid'=>$dbRow[$field->field_name]]);
-				$value->min = $field->field_min;
-				$value->max = $field->field_max;
-				$value->Update();
 			}
-
 		}
 	}
 }

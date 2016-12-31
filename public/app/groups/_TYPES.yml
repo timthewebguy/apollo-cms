@@ -1,7 +1,6 @@
 
 FAQ:
-  description: 'FAQ Data type'
-  #displayValue: 'question'
+  guid_prefix: 'FAQ'
   structure:
     question:
       type: text
@@ -10,9 +9,8 @@ FAQ:
       type: wysiwyg
       description: 'answer to the faq'
 
-BUTTON:
-  description: 'button data type'
-  displayValue: 'text'
+Button:
+  guid_prefix: 'BTN'
   structure:
     text:
       type: text
@@ -22,19 +20,30 @@ BUTTON:
       description: 'Link the button leads to'
 
 
-HERO_SLIDE:
-  description: 'Slide Data for a hero slider'
-  #displayValue: 'text'
+Hero Slide:
+  guid_prefix: 'HS'
   structure:
     image:
-      type: image
+      type: media
       description: 'the image of the hero slide'
+    title:
+      type: text
+      description: 'the title text of the hero slide'
     text:
       type: text
       description: 'the text of the hero slide'
-    buttons:
-      type: array
-      item-type: BUTTON
+    ctas:
+      type: button
       description: 'the ctas of the slide'
       min-items: 1
-      max-items: 4
+      max-items: 3
+
+Blog Post:
+  guid_prefix: 'BLOG'
+  structure:
+    thumbnail:
+      type: media
+    title:
+      type: text
+    content:
+      type: wysiwyg

@@ -4,12 +4,12 @@
 	require_once('app/system/config.php');
 	require_once('app/system/includes.php');
 
-	//require_once('app/system/installed.php');
-	//if(!INSTALLED) {
-	//	require('app/system/install.php');
-	//}
+	require_once('app/system/installed.php');
+	if(!INSTALLED) {
+		require('app/system/install.php');
+	}
 
-	//TypeController::LoadTypes();
+	TypeController::LoadTypes();
 
 	/*$class_name = (ucfirst(strtolower(isset($_GET['controller']) ? $_GET['controller'] : 'dashboard')) . 'Controller');
 	if(!class_exists($class_name)) {
@@ -32,11 +32,11 @@
 
 
 	//$type = TypeController::CreateType('Button', 'compound', 'BTN', ['text'=>['type'=>'text', 'description'=>'button text'], 'link'=>['type'=>'text', 'description'=>'button link']]);
-	$button_type = TypeController::RetrieveType(['slug'=>'button']);
-	$text_field = $button_type->getField('text');
-	$text_field->field_min = 1;
-	$text_field->field_max = 1;
-	$button_type->updateField($text_field);
+	//$button_type = TypeController::RetrieveType(['slug'=>'button']);
+	//$text_field = $button_type->getField('text');
+	//$text_field->field_min = 1;
+	//$text_field->field_max = 1;
+	//$button_type->updateField($text_field);
 	//$button_type->addField(new CompoundTypeField('button', 'color', 'text', 'color of the button', 1, 1));
 	//$button_type->removeField('color');
 

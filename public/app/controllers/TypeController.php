@@ -23,8 +23,8 @@ class TypeController {
 			//enter the field into the compound types fields data table
 			$param_type = $param_data['type'];
 			$param_description = $param_data['description'] == null ? '' : $param_data['description'];
-			$min = isset($param_data['min']) ? $param_data['min'] : 1;
-			$max = isset($param_data['max']) ? $param_data['max'] : 1;
+			$min = isset($param_data['min-items']) ? $param_data['min-items'] : 1;
+			$max = isset($param_data['max-items']) ? $param_data['max-items'] : 1;
 			DB::Query("INSERT INTO " . COMPOUND_TYPE_FIELDS_TABLE . " VALUES (NULL, '{$slug}', '{$param}', '{$param_type}', '{$param_description}', {$min}, {$max})");
 
 			//add to the compound types table creation query
@@ -40,7 +40,7 @@ class TypeController {
 		return new Type($id, $name, $slug, $type, $guid_prefix);
 	}
 
-	public function RetrieveType($params = null, $orderby = null, $assoc = false) {
+	public function RetrieveType($params = null, $orderby = null, $assoc = false, $forceArray = false) {
 		require_once MODELS . '/TypeModel.php';
 
 		//base query
@@ -73,7 +73,7 @@ class TypeController {
 			}
 		}
 
-		if(count($response) == 1) {
+		if(count($response) == 1 && !$forceArray) {
 			return $response[0];
 		} else {
 			return $response;
@@ -82,19 +82,82 @@ class TypeController {
 
 	public function LoadTypes() {
 		//get all types in database
-		$db_types = TypeController::RetrieveType(null, null, true);
+		$db_types = TypeController::RetrieveType(['type'=>'compound'], null, false, true);
+		//var_dump($db_types);
 
 		//get all types in TYPES.yaml
 		$yml_types = spyc_load_file(GROUPS . '/_TYPES.yml');
+		//var_dump($yml_types);
 
-		//Delete Old Types
-		foreach($db_types as $db_type) {
-			if(!isset($yml_types[$db_type->name])) {
-				$db_type->Delete();
+		if($db_types) {
+			foreach($db_types as $db_type) {
+				//Delete Old Types
+				if(!isset($yml_types[$db_type->name])) {
+					$db_type->Delete();
+					continue;
+				}
+
+				//Update Current Types
+				foreach($db_type->getFields() as $field) {
+					//Delete Old Fields
+					if(!isset($yml_types[$db_type->name]['structure'][$field->field_name])) {
+						$db_type->removeField($field->field_name);
+						continue;
+					}
+
+					//Update Current fields
+					//Change in type
+					if($yml_types[$db_type->name]['structure'][$field->field_name]['type'] != $field->field_type) {
+						//Remove the old one, add a new one.
+						$db_type->removeField($field->field_name);
+						$field->field_type = $yml_types[$db_type->name]['structure'][$field->field_name]['type'];
+						$db_type->addField($field);
+					}
+
+					$update = false;
+					//Change in description
+					if(isset($yml_types[$db_type->name]['structure'][$field->field_name]['description']) && $yml_types[$db_type->name]['structure'][$field->field_name]['description'] != $field->field_description) {
+						$field->field_description = $yml_types[$db_type->name]['structure'][$field->field_name]['description'];
+						$update = true;
+					}
+
+					//Change the min
+					if(isset($yml_types[$db_type->name]['structure'][$field->field_name]['min-items']) && $yml_types[$db_type->name]['structure'][$field->field_name]['min-items'] != $field->field_min) {
+						$field->field_min = $yml_types[$db_type->name]['structure'][$field->field_name]['min-items'];
+						$update = true;
+					}
+
+					//Change the max
+					if(isset($yml_types[$db_type->name]['structure'][$field->field_name]['max-items']) && $yml_types[$db_type->name]['structure'][$field->field_name]['max-items'] != $field->field_max) {
+						$field->field_max = $yml_types[$db_type->name]['structure'][$field->field_name]['max-items'];
+						$update = true;
+					}
+
+					if($update) {
+						$db_type->updateField($field);
+					}
+				}
+
+				foreach($yml_types[$db_type->name]['structure'] as $yml_type_field => $yml_type_field_data) {
+					if(!$db_type->hasField($yml_type_field)) {
+						var_dump($yml_type_field_data);
+						$name = $yml_type_field;
+						$type = $yml_type_field_data['type'];
+						$description = isset($yml_type_field_data['description']) ? $yml_type_field_data['description'] : '';
+						$min = isset($yml_type_field_data['min-items']) ? $yml_type_field_data['min-items'] : 1;
+						$max = isset($yml_type_field_data['max-items']) ? $yml_type_field_data['max-items'] : 1;
+						$db_type->addField(new CompoundTypeField($db_type->slug, $name, $type, $description, $min, $max));
+					}
+				}
+
 			}
 		}
 
-		//Update Current Types
-		//foreach()
+		foreach($yml_types as $yml_type_name => $yml_type_data) {
+			if(TypeController::RetrieveType(['name'=>$yml_type_name]) == null) {
+				TypeController::CreateType($yml_type_name, 'compound', $yml_type_data['guid_prefix'], $yml_type_data['structure']);
+			}
+		}
+
 	}
 }
