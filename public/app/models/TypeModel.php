@@ -36,9 +36,14 @@ class Type
 			TypeController::RetrieveType(['slug'=>$type['type']])->removeField($this->slug);
 		}
 
+		DB::Query("DELETE FROM " . COMPOUND_TYPE_FIELDS_TABLE . " WHERE type='{$this->slug}'");
+		DB::Query("DROP TABLE " . TYPE_TABLE_PREFIX . "{$this->slug}");
+
 		$data = DataController::RetrieveData(['type'=>$this->slug]);
-		foreach($data as $d) {
-			$d->Delete();
+		if($data) {
+			foreach($data as $d) {
+				$d->Delete();
+			}
 		}
 	}
 

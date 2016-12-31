@@ -37,13 +37,3 @@ Hero Slide:
       description: 'the ctas of the slide'
       min-items: 1
       max-items: 3
-
-Blog Post:
-  guid_prefix: 'BLOG'
-  structure:
-    thumbnail:
-      type: media
-    title:
-      type: text
-    content:
-      type: wysiwyg
