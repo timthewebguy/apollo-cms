@@ -32,7 +32,7 @@
 	$conn->query("CREATE TABLE `ap_data` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `guid` varchar(255) DEFAULT NULL, `type` varchar(255) DEFAULT NULL, `value` varchar(255) DEFAULT NULL, `min` int(11) DEFAULT NULL, `max` int(11) DEFAULT NULL, `data_order` int(11) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 	$conn->query("DROP TABLE IF EXISTS `ap_groups`");
-	$conn->query("CREATE TABLE `ap_groups` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(255) DEFAULT NULL, `slug` varchar(255) DEFAULT NULL, `guid_prefix` varchar(4) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
+	$conn->query("CREATE TABLE `ap_groups` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `name` varchar(255) DEFAULT NULL, `slug` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");
 
 	$conn->query("DROP TABLE IF EXISTS `ap_media_library`");
 	$conn->query("CREATE TABLE `ap_media_library` (`id` int(11) unsigned NOT NULL AUTO_INCREMENT, `GUID` varchar(255) DEFAULT NULL, `path` longtext, `extension` varchar(10) DEFAULT NULL, `name` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;");

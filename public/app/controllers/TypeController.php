@@ -150,6 +150,8 @@ class TypeController {
 					}
 				}
 
+				unset($yml_types[$db_type->name]);
+
 			}
 		}
 

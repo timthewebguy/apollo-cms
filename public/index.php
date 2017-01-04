@@ -10,6 +10,7 @@
 	}
 
 	TypeController::LoadTypes();
+	GroupController::LoadGroups();
 
 	/*$class_name = (ucfirst(strtolower(isset($_GET['controller']) ? $_GET['controller'] : 'dashboard')) . 'Controller');
 	if(!class_exists($class_name)) {

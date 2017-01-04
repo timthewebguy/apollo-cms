@@ -3,7 +3,7 @@ apache:
   container_name: apollo-apache
   build: .
   ports:
-    - "8000:80"
+    - "8102:80"
   volumes:
     - ./public:/var/www/html
   links:

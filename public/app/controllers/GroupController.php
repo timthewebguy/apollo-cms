@@ -3,7 +3,7 @@
 class GroupController {
 
 	function __contstruct() {
-		require MODELS . '/Group_model.php';
+		require_once MODELS . '/Group_model.php';
 	}
 
 
@@ -12,15 +12,15 @@ class GroupController {
 	* GroupController::CreateGroup('Home', '1234');
 	*/
 
-	public function CreateGroup($name, $guid_prefix) {
+	public function CreateGroup($name) {
 		require_once MODELS . '/GroupModel.php';
 		require_once APP_PATH . '/system/database.php';
 
 		$slug = strtolower(preg_replace('/ /', '-', $name));
 
-		$id = DB::Query("INSERT INTO " . GROUPS_TABLE . " VALUES (NULL, '{$name}', '{$slug}', {$guid_prefix})");
+		$id = DB::Query("INSERT INTO " . GROUPS_TABLE . " VALUES (NULL, '{$name}', '{$slug}')");
 
-		return new Group($id, $name, $slug, $guid_prefix);
+		return new Group($id, $name, $slug);
 	}
 
 	/*
@@ -30,7 +30,7 @@ class GroupController {
 	* GroupController::RetrieveGroup(null, 'guid_prefix');
 	*/
 
-	public function RetrieveGroup($params = null, $orderby = null) {
+	public function RetrieveGroup($params = null, $orderby = null, $forceArray = false) {
 		require MODELS . '/GroupModel.php';
 		//base query
 		$sql = "SELECT * FROM " . GROUPS_TABLE;
@@ -55,15 +55,100 @@ class GroupController {
 		}
 
 		$db_response = DB::ResultArray($sql);
+		$response = array();
 
 		foreach($db_response as $row) {
 			$response[] = new Group($row['id'], $row['name'], $row['slug'], $row['guid_prefix']);
 		}
 
-		if(count($response) == 1) {
+		if(count($response) == 1 && !$forceArray) {
 			return $response[0];
 		} else {
 			return $response;
+		}
+	}
+
+	public function LoadGroups() {
+
+		$db_groups = GroupController::RetrieveGroup(null, null, true);
+
+		$yml_groups = array();
+		$files = array_diff(scandir(GROUPS, 1), ['..', '.']);
+		foreach($files as $file) {
+			if(basename($file, '.yml') != '_TYPES') {
+				$yml_groups[basename($file, '.yml')] = spyc_load_file(GROUPS . '/' . $file);
+			}
+		}
+
+		if($db_groups) {
+			foreach($db_groups as $db_group) {
+				//delete old groups
+				if(!isset($yml_groups[$db_group->name])) {
+					$db_group->Delete();
+					continue;
+				}
+
+				$yml_group = $yml_groups[$db_group->name];
+
+				//update the content of an existing group
+				$group_content = ContentController::RetrieveContent(['content_group'=>$db_group->slug]);
+				if($group_content) {
+					foreach($group_content as $c) {
+						if(!isset($yml_group[$c->name])) {
+							$c->Delete();
+							continue;
+						}
+
+						$yml_content = $yml_group[$c->name];
+
+						$update = false;
+						if($c->data->type != $yml_content['type']) {
+							$c->data->type = $yml_content['type'];
+							$update = true;
+						}
+						if($c->description != $yml_content['description']) {
+							$c->description = $yml_content['description'];
+							$update = true;
+						}
+						if($c->data->min != $yml_content['min-items']) {
+							$c->data->min = $yml_content['min-items'];
+							$update = true;
+						}
+						if($c->data->min != $yml_content['max-items']) {
+							$c->data->max = $yml_content['max-items'];
+							$update = true;
+						}
+						if($update) {
+							$c->Update();
+						}
+
+						unset($yml_groups[$db_group->name][$c->name]);
+					}
+				}
+
+				foreach($yml_groups[$db_group->name] as $yml_content_name => $yml_content_data) {
+					$min = (isset($yml_content_data['min-items'])) ? $yml_content_data['min-items'] : 1;
+					$max = (isset($yml_content_data['max-items'])) ? $yml_content_data['max-items'] : 1;
+					$data = DataController::CreateData($yml_content_data['type'], $min, $max);
+					$description = (isset($yml_content_data['description'])) ? $yml_content_data['description'] : '';
+
+					ContentController::CreateContent($db_group->slug, $yml_content_name, $data, $description);
+				}
+
+				unset($yml_groups[$db_group->name]);
+			}
+		}
+
+		foreach($yml_groups as $yml_group_name => $yml_group_content) {
+			$group = GroupController::CreateGroup($yml_group_name);
+			foreach($yml_group_content as $yml_content_name => $yml_content_data) {
+				$min = (isset($yml_content_data['min-items'])) ? $yml_content_data['min-items'] : 1;
+				$max = (isset($yml_content_data['max-items'])) ? $yml_content_data['max-items'] : 1;
+				$data = DataController::CreateData($yml_content_data['type'], $min, $max);
+				$description = (isset($yml_content_data['description'])) ? $yml_content_data['description'] : '';
+
+				ContentController::CreateContent($group->slug, $yml_content_name, $data, $description);
+			}
 		}
 	}
 

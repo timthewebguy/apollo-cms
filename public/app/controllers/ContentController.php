@@ -18,7 +18,7 @@ class ContentController {
 		return new Content($id, $name, $slug, $guid, $group, $data, $description);
 	}
 
-	public function RetrieveContent($params = null, $orderby = null) {
+	public function RetrieveContent($params = null, $orderby = null, $forceArray = false) {
 
 		require_once(APP_PATH . '/system/database.php');
 		require_once(CONTROLLERS . '/DataController.php');
@@ -50,7 +50,7 @@ class ContentController {
 			$response[] = new Content($row['id'], $row['name'], $row['slug'], $row['guid'], $row['content_group'], DataController::RetrieveData(['guid'=>$row['data']]), $row['description']);
 		}
 
-		if(count($response) == 1) {
+		if(count($response) == 1 && !$forceArray) {
 			return $response[0];
 		} else {
 			return $response;

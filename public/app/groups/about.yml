@@ -1,6 +1,6 @@
 
 header-image:
-  type: image
+  type: media
   description: 'Image that sits at the top of the about page'
   max-items: 1
 
@@ -10,13 +10,12 @@ header-title:
   max-items: 1
 
 faqs:
-  type: FAQ
+  type: faq
   description: 'FAQs for the about page'
   max-items: unlimited
   min-items: 2
 
 footer-image:
-  type: image
+  type: media
   description: 'Image that sits at the bottom of the about page'
   max-items: 1
-
