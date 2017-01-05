@@ -57,6 +57,46 @@ class ContentController {
 		}
 	}
 
+	function get_view($type) {
+		switch($type) {
+			case 'text':
+				$view = VIEWS . '/contentEditor/contentEditor_text.php';
+				break;
+			case 'wysiwyg':
+				$view = VIEWS . '/contentEditor/contentEditor_wysiwyg.php';
+				break;
+			case 'media':
+				$view = VIEWS . '/contentEditor/contentEditor_media.php';
+				break;
+			default:
+				$view = VIEWS . '/contentEditor/contentEditor_custom.php';
+				break;
+		}
+		return $view;
+	}
+
+	function render($content) {
+		$view = $this->get_view($content->data->type);
+		$data = $content->data;
+		$description = $content->description;
+		$name = $content->name;
+
+		include VIEWS . '/contentEditor/contentEditor.php';
+	}
+
+	function draw_custom_editor($type_data, $type_name) {
+		$type = TypeController::RetrieveType(['slug'=>$type_name]);
+		foreach($type->getFields() as $field) {
+			$view = $this->get_view($field->field_type);
+			//echo $view;
+			$description = $field->field_description;
+			$name = $field->field_name;
+			$data = $type_data[$field->field_name];
+
+			include VIEWS . '/contentEditor/contentEditor.php';
+		}
+	}
+
 }
 	/*public function GetContent($name, $page, $content_data = []) {
 		require_once MODELS . '/Content_model.php';

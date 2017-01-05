@@ -4,9 +4,9 @@
 		<div class="contentEditorCustom__title"><?php echo $index; ?></div>
 		<div class="contentEditorCustom__inner">
 			<?php
-				$this->draw_custom_editor($value, $content, $index);
+				$this->draw_custom_editor($value, $data->type);
 			?>
 		</div>
 	</section>
-	<?php if($content->minValues > 1 || ($content->maxValues > 1 || $content->maxValues == 'unlimited')) {include 'contentEditor_toolbar.php';} ?>
+	<?php if($data->min > 1 || ($data->max > 1 || $data->max == 'unlimited')) {include 'contentEditor_toolbar.php';} ?>
 </fieldset>

@@ -31,7 +31,7 @@ class GroupController {
 	*/
 
 	public function RetrieveGroup($params = null, $orderby = null, $forceArray = false) {
-		require MODELS . '/GroupModel.php';
+		require_once MODELS . '/GroupModel.php';
 		//base query
 		$sql = "SELECT * FROM " . GROUPS_TABLE;
 
@@ -66,6 +66,19 @@ class GroupController {
 		} else {
 			return $response;
 		}
+	}
+
+	public function GetFirstGroupName() {
+		require_once APP_PATH . '/system/database.php';
+
+		$groups = DB::ResultArray("SELECT * FROM " . GROUPS_TABLE . " ORDER BY slug");
+
+		foreach($groups as $g) {
+			$response = $g['name'];
+			break;
+		}
+
+		return $response;
 	}
 
 	public function LoadGroups() {

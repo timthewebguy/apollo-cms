@@ -7,22 +7,20 @@ class DashboardController {
 	}
 
 	function load() {
-		$page = PageController::GetFirstPageName();
-
-		$this->page($page);
+		$this->group(GroupController::GetFirstGroupName());
 	}
 
 
-	function draw_editors($page) {
+	function draw_editors($group) {
 		$cc = new ContentController();
-		foreach($page->contents as $name => $data) {
-			$content = ContentController::GetContent($name, $page->name, $data);
+		$group_content = ContentController::RetrieveContent(['content_group'=>$group->slug], null, true);
+		foreach($group_content as $content) {
 			$cc->render($content);
 		}
 	}
 
 
-	function page($current_page = '') {
+	function group($current_page = '') {
 
 		//In case we went to /dashboard/page without a page specified
 		if($current_page == '') {
@@ -31,10 +29,7 @@ class DashboardController {
 		}
 
 		//Get the pages
-		$pages = PageController::GetPages();
-
-		//sync the database before we load anything (just in case)
-		DB::Sync();
+		$groups = GroupController::RetrieveGroup(null, "slug", true);
 
 		//Load the views
 		include(APP_PATH . '/views/header.php');

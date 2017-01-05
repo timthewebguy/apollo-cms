@@ -1,21 +1,20 @@
 
 	<nav class="pageTabs">
-		<?php foreach ($pages as $page) : ?>
-			<a href="#" id="tab-<?php echo $page->name ?>" class="pageTab<?php if($page->name == $current_page) { echo ' pageTab--active'; } ?>"><?php echo $page->name ?></a>
+		<?php foreach ($groups as $group) : ?>
+			<a href="#" id="tab-<?php echo $group->name ?>" class="pageTab<?php if($group->name == $current_page) { echo ' pageTab--active'; } ?>"><?php echo $group->name ?></a>
 		<?php endforeach; ?>
 	</nav>
 
 	<main class="pageEditors">
-		<?php foreach($pages as $page) : ?>
-			<section class="pageEditor<?php if($page->name == $current_page) { echo ' pageEditor--visible'; } ?>" id="page-<?php echo $page->name ?>">
-				<h1 class="pageName"><?php echo $page->name ?></h1>
+		<?php foreach($groups as $group) : ?>
+			<section class="pageEditor<?php if($group->name == $current_page) { echo ' pageEditor--visible'; } ?>" id="page-<?php echo $group->name ?>">
+				<h1 class="pageName"><?php echo $group->name ?></h1>
 				<form action="" method="POST" role="form">
-					<input type="hidden" name="page" value="<?php echo $page->name ?>">
-					<?php 
-						$this->draw_editors($page); 
+					<input type="hidden" name="page" value="<?php echo $group->name ?>">
+					<?php
+						$this->draw_editors($group);
 					?>
 				</form>
 			</section>
 		<?php endforeach; ?>
 	</main>
-
