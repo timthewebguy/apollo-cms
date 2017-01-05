@@ -20,7 +20,9 @@
 		show_404();
 	}
 
-	if(isset($_GET['parameter'])) {
+	if(isset($_GET['parameter']) && isset($_GET['parameter_b'])) {
+		$class->$method($_GET['parameter'], $_GET['parameter_b']);
+	} elseif(isset($_GET['parameter'])) {
 		$class->$method($_GET['parameter']);
 	} else {
 		$class->$method();

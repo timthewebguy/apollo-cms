@@ -1,33 +1,33 @@
 function initNavigation() {
-	$('.pageTab').addEventListener('click', function(e) {
+	$('.groupTab').addEventListener('click', function(e) {
 		e.preventDefault();
-		var enterClass, 
-				exitClass, 
-				currentTab = $('.pageTab--active'),
-				enterPage = $('#' + this.id.replace('tab', 'page')), 
-				exitPage = $('#' + currentTab.id.replace('tab', 'page'));
+		var enterClass,
+				exitClass,
+				currentTab = $('.groupTab--active'),
+				enterPage = $('#' + this.id.replace('tab', 'group')), 
+				exitPage = $('#' + currentTab.id.replace('tab', 'group'));
 
 		if(currentTab == this) {
 			return;
 		}
 		if(this.isBefore(currentTab)) {
-			enterClass = 'pageEditor--enterLeft';
-			exitClass = 'pageEditor--exitRight';
+			enterClass = 'groupEditor--enterLeft';
+			exitClass = 'groupEditor--exitRight';
 		} else {
-			enterClass = 'pageEditor--enterRight';
-			exitClass = 'pageEditor--exitLeft';
+			enterClass = 'groupEditor--enterRight';
+			exitClass = 'groupEditor--exitLeft';
 		}
-		enterPage.addClass(enterClass).addClass('pageEditor--visible');
-		exitPage.addClass(exitClass).removeClass('pageEditor--visible');
-		$('.pageTab--active').removeClass('pageTab--active');
-		this.addClass('pageTab--active');
+		enterPage.addClass(enterClass).addClass('groupEditor--visible');
+		exitPage.addClass(exitClass).removeClass('groupEditor--visible');
+		$('.groupTab--active').removeClass('groupTab--active');
+		this.addClass('groupTab--active');
 
 		setTimeout(function() {
-			$('.pageEditor').loop(function(p) {
-				p.removeClass('pageEditor--enterRight')
-					.removeClass('pageEditor--enterLeft')
-					.removeClass('pageEditor--exitRight')
-					.removeClass('pageEditor--exitLeft');
+			$('.groupEditor').loop(function(p) {
+				p.removeClass('groupEditor--enterRight')
+					.removeClass('groupEditor--enterLeft')
+					.removeClass('groupEditor--exitRight')
+					.removeClass('groupEditor--exitLeft');
 			});
 
 		}, 150);

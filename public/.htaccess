@@ -8,6 +8,8 @@ RewriteRule ^(\w+)$ index.php?controller=$1 [L]
 # The controller and a method to be called
 RewriteRule ^(\w+)/(\w+)$ index.php?controller=$1&method=$2 [L]
 
-# The controller, a method to be called, and a parmeter for said method
+# The controller, a method to be called, and a parameter for said method
 RewriteRule ^(\w+)/(\w+)/(\w+)$ index.php?controller=$1&method=$2&parameter=$3 [L]
 
+# The controller, a method to be called, and two parameters for said method
+RewriteRule ^(\w+)/(\w+)/(\w+)/(\w+)$ index.php?controller=$1&method=$2&parameter=$3&parameter_b=$4 [L]

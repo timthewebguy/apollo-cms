@@ -20,10 +20,10 @@ class DashboardController {
 	}
 
 
-	function group($current_page = '') {
+	function group($current_group = '', $message = '') {
 
 		//In case we went to /dashboard/page without a page specified
-		if($current_page == '') {
+		if($current_group == '') {
 			$this->load();
 			return;
 		}

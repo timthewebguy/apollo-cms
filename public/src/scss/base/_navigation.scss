@@ -1,11 +1,11 @@
-.pageTabs {
+.groupTabs {
 	width:100vw;
 	height:3em;
 	background-color:lighten($grey, 15%);
 	@include clearfix;
 }
 
-.pageTab {
+.groupTab {
 	display:block;
 	float:left;
 	padding:0 1em;
@@ -20,9 +20,13 @@
 	&:hover {
 		background-color:lighten($grey, 5%);
 	}
+
+	span {
+		line-height:2em;
+	}
 }
 
-.pageTab--active {
+.groupTab--active {
 	color:white;
 	background-color:$primary-color;
 
@@ -31,12 +35,16 @@
 	}
 }
 
-.pageEditors {
+.groupTab--right {
+	float:right;
+}
+
+.groupEditors {
 	width:100vw;
 	position:relative;
 }
 
-.pageEditor {
+.groupEditor {
 	display:block;
 	position:absolute;
 	width:100%;
@@ -48,13 +56,13 @@
 	transform:translateX(0);
 }
 
-.pageEditor--visible {
+.groupEditor--visible {
 	opacity:1;
 	pointer-events:all;
 	transform:translateX(0);
 }
 
-.pageName {
+.groupName {
 	text-transform:capitalize;
 }
 
@@ -100,15 +108,15 @@ $entranceMargin: 1em;
 		transform:translateX(#{$entranceMargin});
 	}
 }
-.pageEditor--enterLeft {
+.groupEditor--enterLeft {
 	animation: 0.15s $ease-curve 0s 1 enterLeft;
 }
-.pageEditor--enterRight {
+.groupEditor--enterRight {
 	animation: 0.15s $ease-curve 0s 1 enterRight;
 }
-.pageEditor--exitLeft {
+.groupEditor--exitLeft {
 	animation: 0.15s $ease-curve 0s 1 exitLeft;
 }
-.pageEditor--exitRight {
+.groupEditor--exitRight {
 	animation: 0.15s $ease-curve 0s 1 exitRight;
 }

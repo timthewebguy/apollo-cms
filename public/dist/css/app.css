@@ -380,11 +380,11 @@ th {
 html {
   font-family: Graphik; }
 
-.pageTabs {
+.groupTabs {
   width: 100vw;
   height: 3em;
   background-color: #c9cfd2; }
-  .pageTabs::after {
+  .groupTabs::after {
     visibility: hidden;
     display: block;
     font-size: 0;
@@ -392,7 +392,7 @@ html {
     clear: both;
     height: 0; }
 
-.pageTab {
+.groupTab {
   display: block;
   float: left;
   padding: 0 1em;
@@ -404,20 +404,25 @@ html {
   color: rgba(0, 0, 0, 0.54);
   cursor: pointer;
   transition: background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1), color 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
-  .pageTab:hover {
+  .groupTab:hover {
     background-color: #adb6bb; }
+  .groupTab span {
+    line-height: 2em; }
 
-.pageTab--active {
+.groupTab--active {
   color: white;
   background-color: #3f51b5; }
-  .pageTab--active:hover {
+  .groupTab--active:hover {
     background-color: #32408f; }
 
-.pageEditors {
+.groupTab--right {
+  float: right; }
+
+.groupEditors {
   width: 100vw;
   position: relative; }
 
-.pageEditor {
+.groupEditor {
   display: block;
   position: absolute;
   width: 100%;
@@ -428,12 +433,12 @@ html {
   pointer-events: none;
   transform: translateX(0); }
 
-.pageEditor--visible {
+.groupEditor--visible {
   opacity: 1;
   pointer-events: all;
   transform: translateX(0); }
 
-.pageName {
+.groupName {
   text-transform: capitalize; }
 
 @keyframes enterLeft {
@@ -468,16 +473,16 @@ html {
     opacity: 0;
     transform: translateX(1em); } }
 
-.pageEditor--enterLeft {
+.groupEditor--enterLeft {
   animation: 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 enterLeft; }
 
-.pageEditor--enterRight {
+.groupEditor--enterRight {
   animation: 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 enterRight; }
 
-.pageEditor--exitLeft {
+.groupEditor--exitLeft {
   animation: 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 exitLeft; }
 
-.pageEditor--exitRight {
+.groupEditor--exitRight {
   animation: 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 exitRight; }
 
 .contentEditor {
@@ -1219,14 +1224,12 @@ html {
 
 .glyphicons.flip {
   transform: scaleX(-1);
-  -webkit-filter: FlipH;
-          filter: FlipH;
+  filter: FlipH;
   -ms-filter: "FlipH"; }
 
 .glyphicons.flipv {
   transform: scaleY(-1);
-  -webkit-filter: FlipV;
-          filter: FlipV;
+  filter: FlipV;
   -ms-filter: "FlipV"; }
 
 .glyphicons.rotate90 {

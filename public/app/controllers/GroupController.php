@@ -165,6 +165,11 @@ class GroupController {
 		}
 	}
 
+	function load() {
+		GroupController::LoadGroups();
+		header("Location: " . SERVERPATH . "/dashboard/group/settings/loadedGroups");
+	}
+
 
 	/*function UpdateGroups() {
 

@@ -162,4 +162,10 @@ class TypeController {
 		}
 
 	}
+
+
+	function load() {
+		TypeController::LoadTypes();
+		header("Location: " . SERVERPATH . "/dashboard/group/settings/loadedTypes");
+	}
 }
