@@ -501,7 +501,8 @@ html {
   border: 0;
   height: auto;
   width: 100%;
-  animation: 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 contentGroupEnter; }
+  animation: 0.3s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 contentGroupEnter;
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
 
 .contentEditor__group--wysiwyg {
   height: 100%;

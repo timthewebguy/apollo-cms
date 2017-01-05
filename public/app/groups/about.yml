@@ -12,7 +12,7 @@ header-title:
 faqs:
   type: faq
   description: 'FAQs for the about page'
-  max-items: unlimited
+  max-items: 9999
   min-items: 2
 
 footer-image:

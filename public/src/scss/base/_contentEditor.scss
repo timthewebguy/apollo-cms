@@ -17,6 +17,7 @@
 	height:auto;
 	width:100%;
 	animation: 0.3s $ease-curve 0s 1 contentGroupEnter;
+	transition:opacity 0.15s $ease-curve;
 }
 
 .contentEditor__group--wysiwyg {
@@ -169,7 +170,7 @@
 		&>.contentEditorCustom__inner {
 			opacity:1;
 			transform:translatey(0%);
-			transition: opacity 0.25s $ease-in-curve, 
+			transition: opacity 0.25s $ease-in-curve,
 							transform 0.25s $ease-in-curve;
 		}
 	}
@@ -200,7 +201,7 @@
 	overflow:hidden;
 	opacity:0;
 	transform:translateY(-5%);
-	transition: opacity 0.25s $ease-out-curve, 
+	transition: opacity 0.25s $ease-out-curve,
 							transform 0.25s $ease-out-curve;
 }
 

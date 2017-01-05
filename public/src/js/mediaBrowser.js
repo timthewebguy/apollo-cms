@@ -34,6 +34,7 @@ function initMediaBrowser() {
 	});
 
 	$('.mediaBrowser__select').addEventListener('click', function() {
+		console.log($(loadTarget));
 		$(loadTarget).value = $('.media__radio:checked').value;
 		$(loadTarget).dataset.valueName = $('.media__radio:checked').id;
 		$('.media__radio:checked').checked = false;
@@ -72,7 +73,7 @@ function uploadFiles (files) {
 	$('.mediaBrowser__uploadProgress').value = 0;
 	var formData = new FormData(),
 			xhr = new XMLHttpRequest();
-		
+
 	for(var i = 0; i < files.length; i++) {
 		formData.append('uploaded['+i+']', files[i]);
 	}
@@ -102,7 +103,7 @@ function deleteButtonEvent() {
 }
 
 function deleteMedia() {
-	
+
 	if(window.confirm("Are you sure you want to delete this media?")) {
 		var formData = new FormData(),
 				xhr = new XMLHttpRequest();
@@ -123,5 +124,3 @@ function loadMediaBrowser(target) {
 	}
 	$('.mediaBrowser').addClass('visible');
 }
-
-

@@ -4,7 +4,7 @@ function initNavigation() {
 		var enterClass,
 				exitClass,
 				currentTab = $('.groupTab--active'),
-				enterPage = $('#' + this.id.replace('tab', 'group')), 
+				enterPage = $('#' + this.id.replace('tab', 'group')),
 				exitPage = $('#' + currentTab.id.replace('tab', 'group'));
 
 		if(currentTab == this) {
@@ -21,6 +21,7 @@ function initNavigation() {
 		exitPage.addClass(exitClass).removeClass('groupEditor--visible');
 		$('.groupTab--active').removeClass('groupTab--active');
 		this.addClass('groupTab--active');
+		window.history.pushState(null, null, "/dashboard/group/" + this.id.replace('tab-', ''));
 
 		setTimeout(function() {
 			$('.groupEditor').loop(function(p) {

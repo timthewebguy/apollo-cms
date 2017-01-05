@@ -27,10 +27,13 @@ function initContentEditor() {
 
 		xhr.onload = function() {
 			if(this.responseText == 'success') {
-				removeTarget.parentElement.removeChild(removeTarget);
+				removeTarget.style.opacity = "0";
+				setTimeout(function() {
+					removeTarget.parentElement.removeChild(removeTarget);
+				}, 150);
 			} else {
-				//alert("Something went wrong in deleting the content. Please try again.");
-				console.log(this.responseText);
+				alert("Something went wrong in deleting the content. Please try again.");
+				//console.log(this.responseText);
 			}
 		};
 
@@ -163,6 +166,7 @@ function initMediaBrowser() {
 	});
 
 	$('.mediaBrowser__select').addEventListener('click', function() {
+		console.log($(loadTarget));
 		$(loadTarget).value = $('.media__radio:checked').value;
 		$(loadTarget).dataset.valueName = $('.media__radio:checked').id;
 		$('.media__radio:checked').checked = false;
@@ -201,7 +205,7 @@ function uploadFiles (files) {
 	$('.mediaBrowser__uploadProgress').value = 0;
 	var formData = new FormData(),
 			xhr = new XMLHttpRequest();
-		
+
 	for(var i = 0; i < files.length; i++) {
 		formData.append('uploaded['+i+']', files[i]);
 	}
@@ -231,7 +235,7 @@ function deleteButtonEvent() {
 }
 
 function deleteMedia() {
-	
+
 	if(window.confirm("Are you sure you want to delete this media?")) {
 		var formData = new FormData(),
 				xhr = new XMLHttpRequest();
@@ -252,8 +256,6 @@ function loadMediaBrowser(target) {
 	}
 	$('.mediaBrowser').addClass('visible');
 }
-
-
 
 /*global self, document, DOMException */
 
@@ -8095,7 +8097,7 @@ function initNavigation() {
 		var enterClass,
 				exitClass,
 				currentTab = $('.groupTab--active'),
-				enterPage = $('#' + this.id.replace('tab', 'group')), 
+				enterPage = $('#' + this.id.replace('tab', 'group')),
 				exitPage = $('#' + currentTab.id.replace('tab', 'group'));
 
 		if(currentTab == this) {
@@ -8112,6 +8114,7 @@ function initNavigation() {
 		exitPage.addClass(exitClass).removeClass('groupEditor--visible');
 		$('.groupTab--active').removeClass('groupTab--active');
 		this.addClass('groupTab--active');
+		window.history.pushState(null, null, "/dashboard/group/" + this.id.replace('tab-', ''));
 
 		setTimeout(function() {
 			$('.groupEditor').loop(function(p) {

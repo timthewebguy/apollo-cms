@@ -1,4 +1,4 @@
-<input class="media__radio" type="radio" name="selected-media" id="media-radio-<?php echo $media->id ?>" value="<?php echo $media->abs_path ?>">
+<input class="media__radio" type="radio" name="selected-media" id="media-radio-<?php echo $media->id ?>" value="<?php echo $media->path ?>">
 <label class="media" id="media-<?php echo $media->id ?>" for="media-radio-<?php echo $media->id ?>">
 	<div class="media__thumbnail" style="background:url(<?php echo $media->path ?>) no-repeat center/contain"></div>
 	<nav class="media__toolbar">

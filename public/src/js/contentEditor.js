@@ -27,10 +27,13 @@ function initContentEditor() {
 
 		xhr.onload = function() {
 			if(this.responseText == 'success') {
-				removeTarget.parentElement.removeChild(removeTarget);
+				removeTarget.style.opacity = "0";
+				setTimeout(function() {
+					removeTarget.parentElement.removeChild(removeTarget);
+				}, 150);
 			} else {
-				//alert("Something went wrong in deleting the content. Please try again.");
-				console.log(this.responseText);
+				alert("Something went wrong in deleting the content. Please try again.");
+				//console.log(this.responseText);
 			}
 		};
 
