@@ -97,6 +97,23 @@ class ContentController {
 		}
 	}
 
+
+	function add_content() {
+		$data = DataController::RetrieveData(['guid'=>$_POST['data-guid']]);
+		$data->AddValue();
+		$view = $this->get_view($data->type);
+		$index = count($data->value) - 1;
+		$valueGUID = $data->valueGUID[$index];
+		$value = $data->value[$index];
+		include $view;
+	}
+
+	function remove_content() {
+		$data = DataController::RetrieveData(['guid'=>$_POST['data-guid']]);
+		$data->RemoveValue($_POST['index']);
+
+		echo 'success';
+	}
 }
 	/*public function GetContent($name, $page, $content_data = []) {
 		require_once MODELS . '/Content_model.php';

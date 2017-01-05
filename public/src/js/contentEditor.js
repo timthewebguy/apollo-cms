@@ -2,13 +2,12 @@ function initContentEditor() {
 
 	var addTarget, removeTarget;
 
-	function addContent(addFor, guid) {
+	function addContent(addFor) {
 
 		var formData = new FormData(),
 			xhr = new XMLHttpRequest();
 
-		formData.append('data', addFor);
-		formData.append('guid', guid);
+		formData.append('data-guid', addFor);
 
 		xhr.onload = function() {
 			addTarget.insertAdjacentHTML('beforebegin', this.responseText);
@@ -23,7 +22,7 @@ function initContentEditor() {
 		var formData = new FormData(),
 			xhr = new XMLHttpRequest();
 
-		formData.append('target', removeFor);
+		formData.append('data-guid', removeFor);
 		formData.append('index', removeIndex);
 
 		xhr.onload = function() {
@@ -82,7 +81,7 @@ function initContentEditor() {
 	function addContentButtonEvent(e) {
 		e.preventDefault();
 		addTarget = this;
-		addContent(this.dataset.addfor, this.parentElement.dataset.guid);
+		addContent(this.dataset.addfor);
 	}
 
 	function contentRemoveButtonEvent(e) {
@@ -98,9 +97,9 @@ function initContentEditor() {
 		$('.contentEditor__mediaBrowserLaunch').removeEventListener('click', mediaBrowserButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').removeEventListener('click', contentRemoveButtonEvent, false);
 
+		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
 		$('.contentEditorCustom__title').addEventListener('click', customTypeOpenEvent, false);
 		$('.contentEditor__mediaBrowserLaunch').addEventListener('click', mediaBrowserButtonEvent, false);
-		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').addEventListener('click', contentRemoveButtonEvent, false);
 
 		$('.contentEditor').loop(function(ce) {
