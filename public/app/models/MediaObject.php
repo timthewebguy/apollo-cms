@@ -3,14 +3,16 @@
 //Media Object Class
 class MediaObject {
 	public $name;
+	public $guid;
 	public $extension;
-	public $abs_path;
+	public $path;
 	public $id;
 
-	public function __construct($n, $e, $p, $i) {
+	public function __construct($n, $g, $e, $p, $i) {
 		$this->name = $n;
+		$this->guid = $g;
 		$this->extension = $e;
-		$this->abs_path = $p;
+		$this->path = $p;
 		$this->id = $i;
 	}
 }

@@ -2,7 +2,7 @@
 class MediaController {
 
 	function __construct() {
-		require_once MODELS . '/MediaObject_model.php';
+		require_once MODELS . '/MediaObject.php';
 	}
 
 	function upload() {
@@ -17,9 +17,10 @@ class MediaController {
 
 					$ext = pathinfo($file_name, PATHINFO_EXTENSION);
 					$name = basename($file_name, '.' . $ext);
-					$id = DB::Query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$name}', '{$ext}', '/app/uploads/{$file_name}')");
+					$guid = DB::Guid();
+					$id = DB::Query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$guid}', '/app/uploads/{$file_name}', '{$ext}',  '{$name}')");
 					$data = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE . " WHERE id={$id}")[0];
-					$media = new MediaObject($data['media_name'], $data['media_ext'], $data['media_abs_path'], $data['id']);
+					$media = new MediaObject($data['name'], $data['guid'], $data['extension'], $data['path'], $data['id']);
 					include(VIEWS . '/mediaBrowser/mediaObject_view.php');
 
 				}
@@ -30,7 +31,7 @@ class MediaController {
 
 	function delete() {
 
-		$path = DB::ResultArray("SELECT media_abs_path FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}")[0]['media_abs_path'];
+		$path = DB::ResultArray("SELECT path FROM " . MEDIA_TABLE . " WHERE id={$_POST['delete_id']}")[0]['media_abs_path'];
 
 		$path = str_replace('/app', '..', $path);
 
@@ -47,7 +48,7 @@ class MediaController {
 		$media_objects = array();
 
 		foreach($media as $media_data) {
-			array_push($media_objects, new MediaObject($media_data['media_name'], $media_data['media_ext'], $media_data['media_abs_path'], $media_data['id']));
+			$media_objects[] = new MediaObject($media_data['name'], $media_data['guid'], $media_data['extension'], $media_data['path'], $media_data['id']);
 		}
 		return $media_objects;
 	}
