@@ -9,7 +9,10 @@
 	<main class="groupEditors">
 		<?php foreach($groups as $group) : ?>
 			<section class="groupEditor<?php if($group->name == $current_group) { echo ' groupEditor--visible'; } ?>" id="group-<?php echo $group->name ?>">
-				<h1 class="groupName"><?php echo $group->name ?></h1>
+				<header class="groupHeader">
+					<h1 class="groupName"><?php echo $group->name ?></h1>
+					<a href="#" class="groupSaveButton">Save</a>
+				</header>
 				<form action="" method="POST" role="form">
 					<input type="hidden" name="group" value="<?php echo $group->name ?>">
 					<?php

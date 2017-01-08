@@ -93,17 +93,28 @@ function initContentEditor() {
 		removeContent(this.dataset.removeFor, this.dataset.removeIndex);
 	}
 
+	function contentInputChangeEvent() {
+		this.addClass('did-change');
+		this.ancestor('.groupEditor').find('.groupSaveButton')[0].addClass('canSave');
+	}
+
 	function contentEditorEvents() {
 
 		$('.contentEditor__incrementor').removeEventListener('click', addContentButtonEvent, false);
 		$('.contentEditorCustom__title').removeEventListener('click', customTypeOpenEvent, false);
 		$('.contentEditor__mediaBrowserLaunch').removeEventListener('click', mediaBrowserButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').removeEventListener('click', contentRemoveButtonEvent, false);
+		$('.contentEditor>fieldset>input').removeEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor>fieldset>div>input').removeEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor__wysiwyg').removeEventListener('input', contentInputChangeEvent, false);
 
 		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
 		$('.contentEditorCustom__title').addEventListener('click', customTypeOpenEvent, false);
 		$('.contentEditor__mediaBrowserLaunch').addEventListener('click', mediaBrowserButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').addEventListener('click', contentRemoveButtonEvent, false);
+		$('.contentEditor>fieldset>input').addEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor>fieldset>div>input').addEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor__wysiwyg').addEventListener('input', contentInputChangeEvent, false);
 
 		$('.contentEditor').loop(function(ce) {
 			if(ce.find('> .contentEditor__group').length >= ce.dataset.maxItems) {
@@ -125,10 +136,10 @@ function init() {
 	initNavigation();
 	initContentEditor();
 	initMediaBrowser();
+	initSaveButtons();
 }
 
 window.addEventListener('load', init, false);
-
 
 
 var loadTarget;
@@ -169,6 +180,7 @@ function initMediaBrowser() {
 		console.log($(loadTarget));
 		$(loadTarget).value = $('.media__radio:checked').value;
 		$(loadTarget).dataset.valueName = $('.media__radio:checked').id;
+		$(loadTarget).fire('input');
 		$('.media__radio:checked').checked = false;
 		$('.mediaBrowser').removeClass('visible');
 	});
@@ -8151,6 +8163,48 @@ function initNavigation() {
 })(window.document, Element.prototype);
 
 
+Element.prototype.matches =
+  Element.prototype.matchesSelector ||
+  Element.prototype.mozMatchesSelector ||
+  Element.prototype.msMatchesSelector ||
+  Element.prototype.oMatchesSelector ||
+  Element.prototype.webkitMatchesSelector ||
+  function(s) {
+      var matches = (this.document || this.ownerDocument).querySelectorAll(s),
+          i = matches.length;
+      while (--i >= 0 && matches.item(i) !== this) {}
+      return i > -1;
+  };
+
+function initSaveButtons() {
+	$('.groupSaveButton').addEventListener('click', function(e) {
+		e.preventDefault();
+
+		var formData = new FormData(),
+				xhr = new XMLHttpRequest();
+
+		this.ancestor('.groupEditor').find('.did-change').loop(function(input) {
+			if(!input.hasClass('contentEditor__wysiwyg')) {
+				formData.append('changeData[' + input.id + ']', input.value);
+			} else {
+				formData.append('changeData[' + input.id + ']', input.innerHTML);
+			}
+		});
+
+		xhr.onload = function() {
+			if(this.responseText == 'success') {
+				alert('Content Successfuly Saved.');
+			} else {
+				alert('Something Went Wrong. Please Try Again.');
+			}
+		};
+
+		xhr.open('post', '/group/save');
+		xhr.send(formData);
+	}, false);
+}
+
+
 function $(sel, ctx) {
 	var c = ctx || document;
 	var query = c.querySelectorAll(sel);
@@ -8242,7 +8296,7 @@ Element.prototype.removeClass = function(_class) {
 			if(cl != _class) { finalClassName += cl + ' ' }
 		});
 		this.className = finalClassName.replace(/[ /t]+$/, '');
-		return this;	
+		return this;
 	}
 };
 
@@ -8274,3 +8328,25 @@ NodeList.prototype.loop = function(func) {
 	}
 };
 
+Element.prototype.ancestor = function(query) {
+	var elem = this.parentElement;
+
+	while(!elem.matches(query) && elem !== document.body) {
+		elem = elem.parentElement;
+	}
+
+	return (elem === document.body) ? null : elem;
+};
+
+Element.prototype.fire = function(eventName) {
+    if (document.createEventObject) {
+        // dispatch for IE
+        var evt = document.createEventObject();
+        return this.fireEvent('on'+eventName,evt)
+    } else {
+        // dispatch for firefox + others
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent(eventName, true, true ); // event type,bubbling,cancelable
+        return !this.dispatchEvent(evt);
+    }
+};

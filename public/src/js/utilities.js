@@ -90,7 +90,7 @@ Element.prototype.removeClass = function(_class) {
 			if(cl != _class) { finalClassName += cl + ' ' }
 		});
 		this.className = finalClassName.replace(/[ /t]+$/, '');
-		return this;	
+		return this;
 	}
 };
 
@@ -122,3 +122,25 @@ NodeList.prototype.loop = function(func) {
 	}
 };
 
+Element.prototype.ancestor = function(query) {
+	var elem = this.parentElement;
+
+	while(!elem.matches(query) && elem !== document.body) {
+		elem = elem.parentElement;
+	}
+
+	return (elem === document.body) ? null : elem;
+};
+
+Element.prototype.fire = function(eventName) {
+    if (document.createEventObject) {
+        // dispatch for IE
+        var evt = document.createEventObject();
+        return this.fireEvent('on'+eventName,evt)
+    } else {
+        // dispatch for firefox + others
+        var evt = document.createEvent("HTMLEvents");
+        evt.initEvent(eventName, true, true ); // event type,bubbling,cancelable
+        return !this.dispatchEvent(evt);
+    }
+};

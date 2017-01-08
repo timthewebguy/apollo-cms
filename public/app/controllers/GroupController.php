@@ -170,6 +170,30 @@ class GroupController {
 		header("Location: " . SERVERPATH . "/dashboard/group/settings/loadedGroups");
 	}
 
+	function save() {
+
+		foreach($_POST['changeData'] as $guid => $value) {
+
+			$data_guid = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE value='{$guid}'")[0]['guid'];
+			$data = DataController::RetrieveData(['guid' => $data_guid]);
+
+			if($data->min == 1 && $data->max == 1) {
+				//not an array
+				$data->value = $value;
+			} else {
+				//array
+				$index = array_search($guid, $data->valueGUID);
+				$data->value[$index] = $value;
+			}
+
+			$data->update();
+
+			echo 'success';
+
+		}
+
+	}
+
 
 	/*function UpdateGroups() {
 

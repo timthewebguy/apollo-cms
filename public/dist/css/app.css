@@ -485,6 +485,40 @@ html {
 .groupEditor--exitRight {
   animation: 0.15s cubic-bezier(0.4, 0, 0.2, 1) 0s 1 exitRight; }
 
+.groupHeader {
+  padding: 1em 0;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-flow: row wrap;
+      flex-flow: row wrap;
+  -ms-flex-align: center;
+      align-items: center; }
+  .groupHeader::after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0; }
+
+.groupName {
+  float: left;
+  margin: 0; }
+
+.groupSaveButton {
+  float: left;
+  margin-left: 1em;
+  background-color: #2196F3;
+  color: white;
+  padding: 0.5em;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+  .groupSaveButton.canSave {
+    opacity: 1;
+    pointer-events: all; }
+
 .contentEditor {
   display: block;
   max-width: 50em;

@@ -62,7 +62,7 @@
 
 
 	//Update installed.php to reflect the installation status
-	$installed = fopen('installed.php', 'w');
+	$installed = fopen('/system/installed.php', 'w');
 	$content = "<?php\n\n//This script is automatically generated and keeps track\n//of the installation status of this system.\n//DO NOT MODIFY\n\nDEFINE('INSTALLED', TRUE);";
 	fwrite($installed, $content);
 	fclose($installed);

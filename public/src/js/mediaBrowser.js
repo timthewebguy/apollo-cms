@@ -37,6 +37,7 @@ function initMediaBrowser() {
 		console.log($(loadTarget));
 		$(loadTarget).value = $('.media__radio:checked').value;
 		$(loadTarget).dataset.valueName = $('.media__radio:checked').id;
+		$(loadTarget).fire('input');
 		$('.media__radio:checked').checked = false;
 		$('.mediaBrowser').removeClass('visible');
 	});

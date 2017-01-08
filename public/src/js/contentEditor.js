@@ -93,17 +93,28 @@ function initContentEditor() {
 		removeContent(this.dataset.removeFor, this.dataset.removeIndex);
 	}
 
+	function contentInputChangeEvent() {
+		this.addClass('did-change');
+		this.ancestor('.groupEditor').find('.groupSaveButton')[0].addClass('canSave');
+	}
+
 	function contentEditorEvents() {
 
 		$('.contentEditor__incrementor').removeEventListener('click', addContentButtonEvent, false);
 		$('.contentEditorCustom__title').removeEventListener('click', customTypeOpenEvent, false);
 		$('.contentEditor__mediaBrowserLaunch').removeEventListener('click', mediaBrowserButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').removeEventListener('click', contentRemoveButtonEvent, false);
+		$('.contentEditor>fieldset>input').removeEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor>fieldset>div>input').removeEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor__wysiwyg').removeEventListener('input', contentInputChangeEvent, false);
 
 		$('.contentEditor__incrementor').addEventListener('click', addContentButtonEvent, false);
 		$('.contentEditorCustom__title').addEventListener('click', customTypeOpenEvent, false);
 		$('.contentEditor__mediaBrowserLaunch').addEventListener('click', mediaBrowserButtonEvent, false);
 		$('.contentEditor__toolbarBtn--remove').addEventListener('click', contentRemoveButtonEvent, false);
+		$('.contentEditor>fieldset>input').addEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor>fieldset>div>input').addEventListener('input', contentInputChangeEvent, false);
+		$('.contentEditor__wysiwyg').addEventListener('input', contentInputChangeEvent, false);
 
 		$('.contentEditor').loop(function(ce) {
 			if(ce.find('> .contentEditor__group').length >= ce.dataset.maxItems) {

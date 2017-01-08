@@ -120,3 +120,33 @@ $entranceMargin: 1em;
 .groupEditor--exitRight {
 	animation: 0.15s $ease-curve 0s 1 exitRight;
 }
+
+
+.groupHeader {
+	@include clearfix;
+	padding:1em 0;
+	display:flex;
+	flex-flow: row wrap;
+	align-items:center;
+}
+
+.groupName {
+	float:left;
+	margin:0;
+}
+.groupSaveButton {
+	float:left;
+	margin-left:1em;
+	background-color:$highlight-color;
+	color:white;
+	padding:0.5em;
+	text-decoration:none;
+	opacity:0;
+	pointer-events:none;
+	transition:opacity 0.15s $ease-curve;
+
+	&.canSave {
+		opacity:1;
+		pointer-events:all;
+	}
+}
