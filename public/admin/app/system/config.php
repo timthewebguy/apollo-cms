@@ -1,7 +1,8 @@
 <?php if(!DEFINED('BASEPATH')) {Die('No Script Access!');}
 	//Paths for directories
-	DEFINE('APP_PATH', BASEPATH . '/app');
+	DEFINE('APP_PATH', BASEPATH . '/admin/app');
 	DEFINE('SERVERPATH', 'http://' . $_SERVER['HTTP_HOST']);
+	DEFINE('ROOT_PATH', SERVERPATH . '/admin');
 
 	DEFINE('GROUPS', APP_PATH . '/groups');
 	DEFINE('VIEWS', APP_PATH .'/views');

@@ -6,6 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>APOLLO CMS</title>
   <meta name="description" content="">
-  <link rel="stylesheet" href="<?php echo SERVERPATH ?>/dist/css/app.min.css">
+  <link rel="stylesheet" href="<?php echo ROOT_PATH ?>/dist/css/app.min.css">
 </head>
 <body>
