@@ -10,6 +10,9 @@
 		<?php foreach($groups as $group) : ?>
 			<section class="groupEditor<?php if($group->name == $current_group) { echo ' groupEditor--visible'; } ?>" id="group-<?php echo $group->name ?>">
 				<header class="groupHeader">
+					<div class="notificationContainer">
+						<p class="notification saveNotification" style="opacity:0;display:none;">Saved!</p>
+					</div>
 					<h1 class="groupName"><?php echo $group->name ?></h1>
 					<a href="#" class="groupSaveButton">Save</a>
 				</header>
@@ -25,10 +28,10 @@
 			<h1>Settings</h1>
 			<h3>YAML Operations</h3>
 			<?php if($message == 'loadedTypes') { ?>
-				<p><strong>Loaded Types</strong></p>
+				<p class="notification"><strong>Loaded Types</strong></p>
 			<?php } ?>
 			<?php if($message == 'loadedGroups') { ?>
-				<p><strong>Loaded Groups</strong></p>
+				<p class="notification"><strong>Loaded Groups</strong></p>
 			<?php } ?>
 			<a href="/type/load" class="settingsBtn">Reload Types</a>
 			<a href="/group/load" class="settingsBtn">Reload Groups</a>

@@ -1,6 +1,8 @@
 function initSaveButtons() {
+	var saveBtn;
 	$('.groupSaveButton').addEventListener('click', function(e) {
 		e.preventDefault();
+		saveBtn = this;
 
 		var formData = new FormData(),
 				xhr = new XMLHttpRequest();
@@ -15,9 +17,13 @@ function initSaveButtons() {
 
 		xhr.onload = function() {
 			if(this.responseText == 'success') {
-				alert('Content Successfuly Saved.');
+				saveBtn.removeClass('canSave');
+				var n = saveBtn.parentElement.find('.saveNotification')[0];
+				n.style.opacity = '1';
+				n.style.display = 'block';
 			} else {
-				alert('Something Went Wrong. Please Try Again.');
+				//alert('Something Went Wrong. Please Try Again.');
+				console.log(this.responseText);
 			}
 		};
 

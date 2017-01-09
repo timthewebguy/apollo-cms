@@ -172,11 +172,15 @@ class GroupController {
 
 	function save() {
 
+		if(!isset($_POST['changeData'])) {
+			return;
+		}
+
 		foreach($_POST['changeData'] as $guid => $value) {
 
 			$data_guid = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE value='{$guid}'")[0]['guid'];
 			$data = DataController::RetrieveData(['guid' => $data_guid]);
-
+			
 			if($data->min == 1 && $data->max == 1) {
 				//not an array
 				$data->value = $value;
@@ -188,9 +192,9 @@ class GroupController {
 
 			$data->update();
 
-			echo 'success';
-
 		}
+
+		echo 'success';
 
 	}
 

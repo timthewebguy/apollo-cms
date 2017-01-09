@@ -137,6 +137,7 @@ function init() {
 	initContentEditor();
 	initMediaBrowser();
 	initSaveButtons();
+	initNotifications();
 }
 
 window.addEventListener('load', init, false);
@@ -8140,6 +8141,16 @@ function initNavigation() {
 	});
 }
 
+function initNotifications() {
+	$('.notification').addEventListener('click', function() {
+		var n = this;
+		n.style.opacity = "0";
+		setTimeout(function() {
+			n.style.display = "none";
+		}, 150);
+	}, false);
+}
+
 (function(doc, proto) {
   try { // check if browser supports :scope natively
     doc.querySelector(':scope body');
@@ -8177,8 +8188,10 @@ Element.prototype.matches =
   };
 
 function initSaveButtons() {
+	var saveBtn;
 	$('.groupSaveButton').addEventListener('click', function(e) {
 		e.preventDefault();
+		saveBtn = this;
 
 		var formData = new FormData(),
 				xhr = new XMLHttpRequest();
@@ -8193,9 +8206,13 @@ function initSaveButtons() {
 
 		xhr.onload = function() {
 			if(this.responseText == 'success') {
-				alert('Content Successfuly Saved.');
+				saveBtn.removeClass('canSave');
+				var n = saveBtn.parentElement.find('.saveNotification')[0];
+				n.style.opacity = '1';
+				n.style.display = 'block';
 			} else {
-				alert('Something Went Wrong. Please Try Again.');
+				//alert('Something Went Wrong. Please Try Again.');
+				console.log(this.responseText);
 			}
 		};
 

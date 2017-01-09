@@ -13,7 +13,6 @@ class Data
 	public $max;
 
 	function __construct($guid, $type, $value, $valueGUID, $min, $max) {
-		//include the database object for CRUD operations.
 		require_once(APP_PATH . '/system/database.php');
 		require_once(CONTROLLERS . '/TypeController.php');
 
@@ -153,6 +152,7 @@ class Data
 
 			DB::Query("INSERT INTO " . TYPE_TABLE_PREFIX . "{$type->slug} VALUES (NULL, '{$valueGUID}', '')");
 			$this->value[$order] = '';
+			$this->valueGUID[$order] = $valueGUID;
 
 		} else {
 
@@ -161,6 +161,7 @@ class Data
 				$field_data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
 				$sql .= ", '{$field_data->guid}'";
 				$this->value[$order][$field->field_name] = $field_data;
+				$this->value[$order][$field->field_name] = $valueGUID;
 			}
 			$sql .= ")";
 			DB::Query($sql);

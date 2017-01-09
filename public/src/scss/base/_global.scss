@@ -1,1 +1,36 @@
 // Global CSS goes here
+
+.notificationContainer {
+	display:block;
+	width:100%;
+	position:relative;
+	@include clearfix;
+}
+
+.notification {
+	display:block;
+	background-color:lighten($grey, 30%);
+	border-left:0.5em solid $green;
+	box-shadow:0 0 0.5em rgba(0,0,0,0.2);
+	color:darken($grey, 50%);
+	padding:0.5em;
+	width:max-content;
+	max-width:100%;
+	min-width:20em;
+	margin:1em 0;
+	cursor:pointer;
+	transition:opacity 0.15s $ease-curve;
+}
+
+.notification--sm {
+	min-width:0;
+}
+
+.notification--float {
+	float:left;
+}
+
+.notification--hidden {
+	display:none;
+	opacity:0;
+}

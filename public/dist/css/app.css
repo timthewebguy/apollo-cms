@@ -380,6 +380,44 @@ th {
 html {
   font-family: Graphik; }
 
+.notificationContainer {
+  display: block;
+  width: 100%;
+  position: relative; }
+  .notificationContainer::after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0; }
+
+.notification {
+  display: block;
+  background-color: #f2f4f5;
+  border-left: 0.5em solid #4caf50;
+  box-shadow: 0 0 0.5em rgba(0, 0, 0, 0.2);
+  color: #24292b;
+  padding: 0.5em;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  max-width: 100%;
+  min-width: 20em;
+  margin: 1em 0;
+  cursor: pointer;
+  transition: opacity 0.15s cubic-bezier(0.4, 0, 0.2, 1); }
+
+.notification--sm {
+  min-width: 0; }
+
+.notification--float {
+  float: left; }
+
+.notification--hidden {
+  display: none;
+  opacity: 0; }
+
 .groupTabs {
   width: 100vw;
   height: 3em;
@@ -518,6 +556,9 @@ html {
   .groupSaveButton.canSave {
     opacity: 1;
     pointer-events: all; }
+  .groupSaveButton.didSave {
+    opacity: 1;
+    background-color: #4caf50; }
 
 .contentEditor {
   display: block;

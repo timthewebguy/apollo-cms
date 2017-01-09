@@ -149,4 +149,9 @@ $entranceMargin: 1em;
 		opacity:1;
 		pointer-events:all;
 	}
+
+	&.didSave {
+		opacity:1;
+		background-color:$green;
+	}
 }
