@@ -166,6 +166,6 @@ class TypeController {
 
 	function load() {
 		TypeController::LoadTypes();
-		header("Location: " . SERVERPATH . "/dashboard/group/settings/loadedTypes");
+		header("Location: " . ROOT_PATH . "/dashboard/group/settings/loadedTypes");
 	}
 }

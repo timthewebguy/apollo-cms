@@ -89,7 +89,7 @@ function uploadFiles (files) {
     }
 	});
 
-	xhr.open('post', '/media/upload');
+	xhr.open('post', adminPath + '/media/upload');
 	xhr.send(formData);
 }
 
@@ -111,7 +111,7 @@ function deleteMedia() {
 
 		formData.append('delete_id', this.dataset.deleteFor);
 
-		xhr.open('post', '/media/delete');
+		xhr.open('post', adminPath + '/media/delete');
 		xhr.send(formData);
 
 		$('#media-' + this.dataset.deleteFor).addClass('delete');

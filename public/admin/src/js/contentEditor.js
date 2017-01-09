@@ -14,7 +14,7 @@ function initContentEditor() {
 			contentEditorEvents();
 		};
 
-		xhr.open('post', '/content/add_content');
+		xhr.open('post', adminPath + '/content/add_content');
 		xhr.send(formData);
 	}
 
@@ -37,7 +37,7 @@ function initContentEditor() {
 			}
 		};
 
-		xhr.open('post', '/content/remove_content');
+		xhr.open('post', adminPath + '/content/remove_content');
 		xhr.send(formData);
 	}
 

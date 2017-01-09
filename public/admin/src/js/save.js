@@ -27,7 +27,7 @@ function initSaveButtons() {
 			}
 		};
 
-		xhr.open('post', '/group/save');
+		xhr.open('post', adminPath + '/group/save');
 		xhr.send(formData);
 	}, false);
 }

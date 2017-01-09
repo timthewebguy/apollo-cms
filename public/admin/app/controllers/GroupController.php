@@ -167,7 +167,7 @@ class GroupController {
 
 	function load() {
 		GroupController::LoadGroups();
-		header("Location: " . SERVERPATH . "/dashboard/group/settings/loadedGroups");
+		header("Location: " . ROOT_PATH . "/dashboard/group/settings/loadedGroups");
 	}
 
 	function save() {
@@ -180,7 +180,7 @@ class GroupController {
 
 			$data_guid = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE value='{$guid}'")[0]['guid'];
 			$data = DataController::RetrieveData(['guid' => $data_guid]);
-			
+
 			if($data->min == 1 && $data->max == 1) {
 				//not an array
 				$data->value = $value;

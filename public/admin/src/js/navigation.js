@@ -21,7 +21,7 @@ function initNavigation() {
 		exitPage.addClass(exitClass).removeClass('groupEditor--visible');
 		$('.groupTab--active').removeClass('groupTab--active');
 		this.addClass('groupTab--active');
-		window.history.pushState(null, null, "/dashboard/group/" + this.id.replace('tab-', ''));
+		window.history.pushState(null, null, adminPath + '/dashboard/group/' + this.id.replace('tab-', ''));
 
 		setTimeout(function() {
 			$('.groupEditor').loop(function(p) {

@@ -1,4 +1,4 @@
-
+var adminPath = '/admin';
 
 function init() {
 	initNavigation();

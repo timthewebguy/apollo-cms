@@ -33,7 +33,7 @@
 			<?php if($message == 'loadedGroups') { ?>
 				<p class="notification"><strong>Loaded Groups</strong></p>
 			<?php } ?>
-			<a href="/type/load" class="settingsBtn">Reload Types</a>
-			<a href="/group/load" class="settingsBtn">Reload Groups</a>
+			<a href="<?php echo ROOT_PATH ?>/type/load" class="settingsBtn">Reload Types</a>
+			<a href="<?php echo ROOT_PATH ?>/group/load" class="settingsBtn">Reload Groups</a>
 		</section>
 	</main>
