@@ -88,11 +88,9 @@ class ContentController {
 		$type = TypeController::RetrieveType(['slug'=>$type_name]);
 		foreach($type->getFields() as $field) {
 			$view = $this->get_view($field->field_type);
-			//echo $view;
 			$description = $field->field_description;
 			$name = $field->field_name;
 			$data = $type_data[$field->field_name];
-
 			include VIEWS . '/contentEditor/contentEditor.php';
 		}
 	}

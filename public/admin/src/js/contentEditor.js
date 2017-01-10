@@ -34,6 +34,7 @@ function initContentEditor() {
 				removeTarget.style.opacity = "0";
 				setTimeout(function() {
 					removeTarget.parentElement.removeChild(removeTarget);
+					contentEditorEvents();
 				}, 150);
 			} else {
 				alert("You already have the minimum number of values for this data.");
@@ -124,6 +125,10 @@ function initContentEditor() {
 			if(ce.find('> .contentEditor__group').length >= ce.dataset.maxItems) {
 				ce.find('> .contentEditor__incrementor').loop(function(i) {
 					i.addClass('disabled');
+				});
+			} else {
+				ce.find('> .contentEditor__incrementor').loop(function(i) {
+					i.removeClass('disabled');
 				});
 			}
 		});

@@ -161,7 +161,7 @@ class Data
 				$field_data = DataController::CreateData($field->field_type, $field->field_min, $field->field_max);
 				$sql .= ", '{$field_data->guid}'";
 				$this->value[$order][$field->field_name] = $field_data;
-				$this->value[$order][$field->field_name] = $valueGUID;
+				$this->valueGUID[$order][$field->field_name] = $valueGUID;
 			}
 			$sql .= ")";
 			DB::Query($sql);

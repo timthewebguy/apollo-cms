@@ -35,5 +35,7 @@
 			<?php } ?>
 			<a href="<?php echo ROOT_PATH ?>/type/load" class="settingsBtn">Reload Types</a>
 			<a href="<?php echo ROOT_PATH ?>/group/load" class="settingsBtn">Reload Groups</a>
+			<h3>Media Operations</h3>
+			<a href="<?php echo ROOT_PATH ?>/media/reload" class="settingsBtn">Reload Media</a>
 		</section>
 	</main>
