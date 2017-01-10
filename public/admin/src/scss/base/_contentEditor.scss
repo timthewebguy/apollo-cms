@@ -137,17 +137,21 @@
 	width:100%;
 	padding:0.25em;
 	height:10em;
+	max-height:60em;
+	min-height:10em;
 	background-color:white;
 	outline:none;
 	transition:box-shadow 0.15s $ease-curve;
 	box-shadow: 0 0 0 0 $highlight-color;
 	animation: 0.3s $ease-curve 0s 1 contentInputEnter;
+	overflow:scroll;
+	resize:vertical;
 
 	&:focus {
 		box-shadow: 0 0 0 0.15em $highlight-color;
 	}
 
-	p {
+	* {
 		margin-top:0;
 	}
 }

@@ -1,5 +1,5 @@
 
-<div class="contentEditor" id="<?php echo $content->group . '_' . $content->name ?>" data-min-items="<?php echo $data->min ?>" data-max-items="<?php echo $data->max ?>" data-guid="<?php echo $data->guid; ?>">
+<div class="contentEditor" id="<?php echo $data->guid ?>" data-min-items="<?php echo $data->min ?>" data-max-items="<?php echo $data->max ?>" data-guid="<?php echo $data->guid; ?>">
 	<label class="contentEditor__label" title="<?php echo $description ?>"><?php echo preg_replace('/([0-9\-(\_\_)])/', ' ', $name); ?></label>
 	<?php
 	if($data->min == 1 && $data->max == 1) {
@@ -15,7 +15,7 @@
 		}
 	}
 	?>
-	<?php if($data->max != 1) : ?>
+	<?php if($data->max != $data->min) : ?>
 		<button class="contentEditor__incrementor" type="button" data-addfor="<?php echo $data->guid ?>">
 			<span class="glyphicons glyphicons-plus"></span>
 		</button>

@@ -10,8 +10,12 @@ function initContentEditor() {
 		formData.append('data-guid', addFor);
 
 		xhr.onload = function() {
-			addTarget.insertAdjacentHTML('beforebegin', this.responseText);
-			contentEditorEvents();
+			if(this.responseText == 'failure') {
+				alert('You already have the maximum number of values for this data.');
+			} else {
+				addTarget.insertAdjacentHTML('beforebegin', this.responseText);
+				contentEditorEvents();
+			}
 		};
 
 		xhr.open('post', adminPath + '/content/add_content');
@@ -32,7 +36,7 @@ function initContentEditor() {
 					removeTarget.parentElement.removeChild(removeTarget);
 				}, 150);
 			} else {
-				alert("Something went wrong in deleting the content. Please try again.");
+				alert("You already have the minimum number of values for this data.");
 				//console.log(this.responseText);
 			}
 		};

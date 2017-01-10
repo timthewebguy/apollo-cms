@@ -142,7 +142,7 @@ class Data
 	function AddValue() {
 
 		//make sure we are not at capacity
-		if(count($this->value) == $this->max) { return; }
+		if(count($this->value) == $this->max) { return false; }
 
 		$type = Typecontroller::RetrieveType(['slug'=>$this->type]);
 		$valueGUID = $type->guid_prefix . '--' . DB::GUID();
@@ -177,7 +177,7 @@ class Data
 	function RemoveValue($index) {
 
 		//make sure we are not at capacity
-		if(count($this->value) == $this->min) { return; }
+		if(count($this->value) == $this->min) { return false; }
 
 		//translate keywords into int indexes
 		if($index == 'last') { $index = count($this->value) - 1; }
@@ -202,6 +202,8 @@ class Data
 		DB::Query("DELETE FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$index}");
 
 		$this->NormalizeOrders();
+
+		return $this;
 
 	}
 
