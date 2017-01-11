@@ -8,7 +8,7 @@ var imagemin = require('gulp-imagemin'),
     cache = require('gulp-cache');
 var minifycss = require('gulp-clean-css');
 var sass = require('gulp-sass');
-var path = 'public/';
+var path = 'public/admin/';
 
 gulp.task('images', function(){
   gulp.src(path + 'src/img/**/*')

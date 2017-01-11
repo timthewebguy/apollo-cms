@@ -1,0 +1,15 @@
+
+
+@function strip-units($number) {
+  @return $number / ($number * 0 + 1);
+}
+
+@mixin min-max-font-size($min-font-size, $max-font-size, $min-breakpoint, $max-breakpoint) {
+  font-size: calc(#{$min-font-size} + (#{strip-units($max-font-size)} - #{strip-units($min-font-size)}) * (100vw - #{$min-breakpoint}) / (#{strip-units($max-breakpoint)} - #{strip-units($min-breakpoint)}));
+}
+
+
+
+html {
+	font-family:sans-serif;
+}

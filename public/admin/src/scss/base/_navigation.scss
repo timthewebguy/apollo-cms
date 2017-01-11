@@ -1,0 +1,157 @@
+.groupTabs {
+	width:100vw;
+	height:3em;
+	background-color:lighten($grey, 15%);
+	@include clearfix;
+}
+
+.groupTab {
+	display:block;
+	float:left;
+	padding:0 1em;
+	line-height:3em;
+	text-align:center;
+	text-transform:uppercase;
+	text-decoration:none;
+	font-weight:bold;
+	color:rgba(0,0,0,0.54);
+	cursor:pointer;
+	transition:background-color 0.15s $ease-curve, color 0.15s $ease-curve;
+	&:hover {
+		background-color:lighten($grey, 5%);
+	}
+
+	span {
+		line-height:2em;
+	}
+}
+
+.groupTab--active {
+	color:white;
+	background-color:$primary-color;
+
+	&:hover {
+		background-color:darken($primary-color, 10%);
+	}
+}
+
+.groupTab--right {
+	float:right;
+}
+
+.groupEditors {
+	width:100vw;
+	position:relative;
+}
+
+.groupEditor {
+	display:block;
+	position:absolute;
+	width:100%;
+	padding:1em;
+	box-sizing:border-box;
+	min-height:100%;
+	opacity:0;
+	pointer-events:none;
+	transform:translateX(0);
+}
+
+.groupEditor--visible {
+	opacity:1;
+	pointer-events:all;
+	transform:translateX(0);
+}
+
+.groupName {
+	text-transform:capitalize;
+}
+
+$entranceMargin: 1em;
+
+@keyframes enterLeft {
+	from {
+		opacity:0;
+		transform:translateX(-#{$entranceMargin});
+	}
+	to {
+		opacity:1;
+		transform:translateX(0);
+	}
+}
+@keyframes enterRight {
+	from {
+		opacity:0;
+		transform:translateX(#{$entranceMargin});
+	}
+	to {
+		opacity:1;
+		transform:translateX(0);
+	}
+}
+@keyframes exitLeft {
+	from {
+		opacity:1;
+		transform:translateX(0);
+	}
+	to {
+		opacity:0;
+		transform:translateX(-#{$entranceMargin});
+	}
+}
+@keyframes exitRight {
+	from {
+		opacity:1;
+		transform:translateX(0);
+	}
+	to {
+		opacity:0;
+		transform:translateX(#{$entranceMargin});
+	}
+}
+.groupEditor--enterLeft {
+	animation: 0.15s $ease-curve 0s 1 enterLeft;
+}
+.groupEditor--enterRight {
+	animation: 0.15s $ease-curve 0s 1 enterRight;
+}
+.groupEditor--exitLeft {
+	animation: 0.15s $ease-curve 0s 1 exitLeft;
+}
+.groupEditor--exitRight {
+	animation: 0.15s $ease-curve 0s 1 exitRight;
+}
+
+
+.groupHeader {
+	@include clearfix;
+	padding:1em 0;
+	display:flex;
+	flex-flow: row wrap;
+	align-items:center;
+}
+
+.groupName {
+	float:left;
+	margin:0;
+}
+.groupSaveButton {
+	float:left;
+	margin-left:1em;
+	background-color:$highlight-color;
+	color:white;
+	padding:0.5em;
+	text-decoration:none;
+	opacity:0;
+	pointer-events:none;
+	transition:opacity 0.15s $ease-curve;
+
+	&.canSave {
+		opacity:1;
+		pointer-events:all;
+	}
+
+	&.didSave {
+		opacity:1;
+		background-color:$green;
+	}
+}
