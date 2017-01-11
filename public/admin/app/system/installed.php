@@ -4,4 +4,4 @@
 //of the installation status of this system.
 //DO NOT MODIFY
 
-DEFINE('INSTALLED', TRUE);
+DEFINE('INSTALLED', FALSE);
