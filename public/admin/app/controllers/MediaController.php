@@ -18,7 +18,7 @@ class MediaController {
 					$ext = pathinfo($file_name, PATHINFO_EXTENSION);
 					$name = basename($file_name, '.' . $ext);
 					$guid = DB::Guid();
-					$id = DB::Query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$guid}', '/app/uploads/{$file_name}', '{$ext}',  '{$name}')");
+					$id = DB::Query("INSERT INTO " . MEDIA_TABLE . " VALUES (NULL, '{$guid}', '" . ROOT_PATH . "/app/uploads/{$file_name}', '{$ext}',  '{$name}')");
 					$data = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE . " WHERE id={$id}")[0];
 					$media = new MediaObject($data['name'], $data['guid'], $data['extension'], $data['path'], $data['id']);
 					include(VIEWS . '/mediaBrowser/mediaObject_view.php');
@@ -59,6 +59,24 @@ class MediaController {
 		$all_media = MediaController::fetch_all_media();
 
 		include_once VIEWS . '/mediaBrowser/media_view.php';
+
+	}
+
+	function reload() {
+
+		$files = $files = array_diff(scandir(UPLOADS, 1), ['..', '.']);
+		foreach($files as $file) {
+			$path_info = pathinfo($file);
+			$name = $path_info['filename'];
+			$db_data = DB::ResultArray("SELECT * FROM " . MEDIA_TABLE . " WHERE name='{$name}'");
+			echo count($db_data) . '<br>';
+			if(count($db_data) == 0) {
+				$guid = DB::GUID();
+				$sql = "INSERT INTO " . MEDIA_TABLE . " VALUES (null, '{$guid}', '" . ROOT_PATH . "/app/uploads/{$path_info['basename']}', '{$path_info['extension']}', '{$name}')";
+				echo $sql . '<br>';
+				DB::Query($sql);
+			}
+		}
 
 	}
 
