@@ -47,7 +47,7 @@ class ContentController {
 		$db_response = DB::ResultArray($sql);
 
 		foreach($db_response as $row) {
-			$response[] = new Content($row['id'], $row['name'], $row['slug'], $row['guid'], $row['content_group'], DataController::RetrieveData(['guid'=>$row['data']]), $row['description']);
+			$response[$row['name']] = new Content($row['id'], $row['name'], $row['slug'], $row['guid'], $row['content_group'], DataController::RetrieveData(['guid'=>$row['data']]), $row['description']);
 		}
 
 		if(count($response) == 1 && !$forceArray) {

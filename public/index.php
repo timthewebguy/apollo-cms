@@ -1,3 +1,9 @@
+<?php
+	require 'apollo.php';
+	$g = GetGroup('home');
+	$content = GetContentByGroup($g);
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,5 +14,6 @@
 </head>
 <body>
 	<h1>Hello World!</h1>
+	<?php echo $content['tagline']->data->value; ?>
 </body>
 </html>
