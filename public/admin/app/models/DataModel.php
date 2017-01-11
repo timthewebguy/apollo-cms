@@ -105,12 +105,12 @@ class Data
 			}
 		}
 
-		//remove value from type table
-		$valueGUIDs = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}'");
-		foreach($valueGUIDs as $row) {
-			$valueGUID = $row['value'];
-			//delete the row in the type table
-			DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$this->type} WHERE guid='{$valueGUID}'");
+		if($this->IsArray()) {
+			for($i = 0; $i < count($this->valueGUID); $i++) {
+				DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$this->type} WHERE guid='{$this->valueGUID[$i]}'");
+			}
+		} else {
+			DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$this->type} WHERE guid='{$this->valueGUID}'");
 		}
 
 		//remove this from data table
@@ -185,20 +185,16 @@ class Data
 
 		$type = Typecontroller::RetrieveType(['slug'=>$this->type]);
 
-		if($type->type == 'base') {
-
-			$valueGUID = DB::ResultArray("SELECT * FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$order}")[0]['value'];
-			DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$type->slug} WHERE guid='{$valueGUID}'");
-
-		} else {
-
+		if($type->type == 'coumpound') {
 			foreach($type->getFields() as $field) {
 				$this->value[$index][$field->field_name]->Delete();
 			}
-
 		}
 
+		DB::Query("DELETE FROM " . TYPE_TABLE_PREFIX . "{$type->slug} WHERE guid='{$this->valueGUID[$index]}'");
+
 		unset($this->value[$index]);
+		unset($this->valueGUID[$index]);
 		DB::Query("DELETE FROM " . DATA_TABLE . " WHERE guid='{$this->guid}' AND data_order={$index}");
 
 		$this->NormalizeOrders();
